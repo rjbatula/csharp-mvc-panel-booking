@@ -40,4 +40,5 @@ Update your progress over here:
 
 | S/No. | Device Name |  Virtiualisable? |
 |---|---|---|
-| 1 |  Palo Alto |  Yes?|
+| 1 |  Palo Alto Firewall |  Yes|
+| 2 |  ChecPoint Firewall |  Yes|
