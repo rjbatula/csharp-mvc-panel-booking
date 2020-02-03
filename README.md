@@ -24,8 +24,8 @@ Update your progress over here:
 | F/No. |  Feature Name |  Assignee | Date of Completion | Status |
 |---|---|---|---|---|
 | DL-01 |  Base Skeleton in .NET |  Joshua | 3 Feb 2020 | Done |
-| DL-02 |  Login System |  Joshua | 3 Feb 2020 | To Do |
-| DL-03 |  Registration |  Joshua | 3 Feb 2020 | To Do |
+| DL-02 |  Login System |  Joshua | 3 Feb 2020 | Done |
+| DL-03 |  Registration |  Joshua | 3 Feb 2020 | Done |
 
 <h3>Assumptions</h3>
 
