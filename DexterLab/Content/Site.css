@@ -27,3 +27,7 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.userprofile{
+    display:none;
+}
