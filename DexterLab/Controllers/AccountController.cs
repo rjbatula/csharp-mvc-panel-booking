@@ -170,6 +170,104 @@ namespace DexterLab.Controllers
             return Redirect("~/Account/login");
         }
 
+        //GET: /account/user-profile
+        [ActionName("user-profile")]
+        [HttpGet]
+        [Authorize]
+        public ActionResult UserProfile()
+        {
+            //Get Username
+            string username = User.Identity.Name;
+
+            //Declare model
+            UserProfileVM model;
+
+            //Using DbSet
+            using (Db db = new Db())
+            {
+                //Get user
+                UserDTO dto = db.Users.FirstOrDefault(x => x.EmailAddress.Equals(username));
+
+                //Build model
+                model = new UserProfileVM(dto);
+
+            }
+
+            //return View with model
+            return View("UserProfile", model);
+        }
+
+        //POST: /account/user-profile
+        [ActionName("user-profile")]
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public ActionResult UserProfile(UserProfileVM model)
+        {
+            //Check model state
+            if (!ModelState.IsValid)
+            {
+                return View("UserProfile", model);
+            }
+
+            //Check if password is not empty
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                //Check if password and confirm password matches
+                if (!model.Password.Equals(model.ConfirmPassword))
+                {
+                    ModelState.AddModelError("", "Password do not match");
+                    return View("UserProfile", model);
+                }
+            }
+
+            //using DbSet
+            using (Db db = new Db())
+            {
+                //Get email address
+                string emailAddress = User.Identity.Name;
+
+                //Check if username is unique
+                if(db.Users.Where(x => x.Id != model.Id).Any(x => x.EmailAddress == emailAddress))
+                {
+                    ModelState.AddModelError("", "Username is already taken");
+                    model.EmailAddress = "";
+                    return View("UserProfile", model);
+                }
+
+                //Edit DTO
+                UserDTO dto = db.Users.Find(model.Id);
+
+                dto.FirstName = model.FirstName;
+                dto.LastName = model.LastName;
+                dto.EmailAddress = model.EmailAddress;
+                dto.PhoneNumber = model.PhoneNumber;
+                dto.Department = model.Department;
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    CustomPasswordHasher hash = new CustomPasswordHasher();
+                    string hashedPassword = hash.HashPassword(model.Password);
+
+                    if (model.Password.Equals(model.ConfirmPassword))
+                    {
+                        dto.Password = hashedPassword;
+                    }
+                }
+
+                //Save Changes
+                db.SaveChanges();
+
+            }
+
+            //Set Temp Message
+            TempData["Success"] = "You have successfully updated your profile";
+
+            //Redirect
+            return Redirect("~/Account/user-profile");
+
+
+        }
+
         //---------------------------------PARTIALS----------------------------------------------------------------------------------
         //User Navigation Partials
         public ActionResult UserNavPartial()
