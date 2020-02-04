@@ -7,6 +7,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Net.Mail;
+using System.Net;
+using System.Configuration;
 
 namespace DexterLab.Controllers
 {
@@ -46,6 +49,7 @@ namespace DexterLab.Controllers
 
             //Set bool isValid for checker
             bool isValid = false;
+            bool confirmBool = false;
 
             //Call DbSet
             using (Db db = new Db())
@@ -70,11 +74,19 @@ namespace DexterLab.Controllers
                         isValid = false;
                     }
                 }
+
+                if(user.EmailConfirm == confirmBool)
+                {
+                    TempData["Failure"] = "Please activate your account via email";
+                    //ModelState.AddModelError("", "Invalid Username or Password");
+                    return View(model);
+                }
             }
             //Check isValid is true
             if (!isValid)
             {
-                ModelState.AddModelError("", "Invalid Username or Password");
+                TempData["Failure"] = "Invalid Username or Password";
+                //ModelState.AddModelError("", "Invalid Username or Password");
                 return View(model);
             }
             else
@@ -107,7 +119,7 @@ namespace DexterLab.Controllers
             //Check if passwords match
             if (!model.Password.Equals(model.ConfirmPassword))
             {
-                ModelState.AddModelError("", "Password do not match.");
+                TempData["Failure"] = "Password do not match";
                 return View("CreateAccount", model);
             }
 
@@ -124,6 +136,8 @@ namespace DexterLab.Controllers
                     model.EmailAddress = "";
                     return View("CreateAccount", model);
                 }
+                //Create a activation GUID
+                Guid activationCode = Guid.NewGuid();
 
                 //Create userDTO
                 UserDTO userDTO = new UserDTO()
@@ -133,7 +147,11 @@ namespace DexterLab.Controllers
                     EmailAddress = model.EmailAddress,
                     PhoneNumber = model.PhoneNumber,
                     Department = model.Department,
-                    Password = hashedPassword
+                    Password = hashedPassword,
+                    EmailConfirm = false,
+                    ActivationCode = activationCode.ToString(),
+                    CreatedOn = DateTime.Now,
+                    ModifiedOn = DateTime.Now
                 };
 
                 //Add userDTO
@@ -153,13 +171,65 @@ namespace DexterLab.Controllers
                 db.UserRoles.Add(userRoleDTO);
 
                 db.SaveChanges();
+
+                //Mail Message
+                using (MailMessage mm = new MailMessage())
+                {
+                    mm.From = new MailAddress("cruxalphonse@gmail.com");
+                    mm.To.Add(model.EmailAddress);
+                    mm.Subject = "Account Activation For Dexter Lab";
+                    string body = "Hello " + model.FirstName + " " + model.LastName + ",";
+                    body += "<br /><br />Please click the following link to activate your account";
+                    body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, activationCode) + "'>Click here to activate your account.</a>";
+                    body += "<br /><br />Thanks";
+                    mm.Body = body;
+                    mm.IsBodyHtml = true;
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.Credentials = new NetworkCredential("cruxalphonse@gmail.com", "P@ss1234");
+                        smtp.EnableSsl = true;
+                        smtp.Send(mm);
+                    }
+                    
+                    //smtp.Host = "smtp.gmail.com";
+                    //smtp.EnableSsl = true;
+                    //NetworkCredential NetworkCred = new NetworkCredential("cruxalphonse@gmail.com", "P@ss1234");
+                    //smtp.UseDefaultCredentials = false;
+                    //smtp.Credentials = NetworkCred;
+                    //smtp.Port = 587;
+                    //smtp.Send(mm);
+                }
             }
 
             //Create a tempdata message
-            TempData["Success"] = "You have successfully registered your account. You can log in now.";
+            TempData["Success"] = "You have successfully registered your account. Check your email to activate your account before logging in.";
 
             //Redirect
             return Redirect("~/Account/login");
+        }
+
+        //GET: /Account/Activation
+        public ActionResult Activation()
+        {
+            ViewBag.Message = "Invalid Activation code.";
+            if (RouteData.Values["id"] != null)
+            {
+                Guid activeCode = new Guid(RouteData.Values["id"].ToString());
+                using (Db db = new Db())
+                {
+                    var entity = db.Users.Where(x => x.ActivationCode == activeCode.ToString()).FirstOrDefault();
+                    if (entity != null)
+                    {
+                        entity.EmailConfirm = true;
+                        entity.ActivationCode = "";
+                    }
+                    db.SaveChanges();
+                    ViewBag.Message = "Activation successful.";
+                }
+            }
+
+            return View();
         }
 
         //GET: /account/logout
@@ -242,6 +312,7 @@ namespace DexterLab.Controllers
                 dto.EmailAddress = model.EmailAddress;
                 dto.PhoneNumber = model.PhoneNumber;
                 dto.Department = model.Department;
+                dto.ModifiedOn = DateTime.Now;
 
                 if (!string.IsNullOrEmpty(model.Password))
                 {
@@ -267,6 +338,8 @@ namespace DexterLab.Controllers
 
 
         }
+
+
 
         //---------------------------------PARTIALS----------------------------------------------------------------------------------
         //User Navigation Partials

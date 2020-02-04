@@ -5,17 +5,23 @@
 }
 
 <h2>Login</h2>
-@if(TempData["Success"] != null)
+@if (TempData["Success"] != null)
 {
     <div class="alert alert-success">
         @TempData["Success"]
     </div>
 }
+@if (TempData["Failure"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Failure"]
+    </div>
+}
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -41,7 +47,7 @@
                 @Html.EditorFor(model => model.RememberMe, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger mb-" })
             </div>
-            
+
 
         </div>
 
@@ -53,6 +59,8 @@
     </div>
 
     <a href="~/Account/create-account">Create an account</a>
+    <br />
+    <a href="~/Account/forgot-password">Forgot Password</a>
 }
 
 @section Scripts {
