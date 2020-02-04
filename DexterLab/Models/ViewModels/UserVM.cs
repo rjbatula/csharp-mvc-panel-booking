@@ -22,6 +22,11 @@ namespace DexterLab.Models.ViewModels
             PhoneNumber = row.PhoneNumber;
             Department = row.Department;
             Password = row.Password;
+            EmailConfirm = row.EmailConfirm;
+            ActivationCode = row.ActivationCode;
+            CreatedOn = row.CreatedOn;
+            ModifiedOn = row.ModifiedOn;
+
         }
         public int Id { get; set; }
         [Required]
@@ -39,5 +44,17 @@ namespace DexterLab.Models.ViewModels
         public string Password { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
+        public bool EmailConfirm { get; set; }
+        public string ActivationCode { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
     }
+    public enum DepartmentEntity
+    {
+        Services,
+        HR,
+        Sales,
+        Operations
+    }
+
 }

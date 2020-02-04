@@ -295,6 +295,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\UserProfile.cshtml" />
+    <Content Include="Views\Account\Activation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

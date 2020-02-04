@@ -27,6 +27,7 @@ Update your progress over here:
 | DL-02 |  Login System |  Joshua | 3 Feb 2020 | Done |
 | DL-03 |  Registration |  Joshua | 3 Feb 2020 | Done |
 |DL-04| User Profiling / Edit Profile | Joshua | 4 Feb 2020 | Done |
+|DL-05| User Account Activation via Email | Joshua | 4 Feb 2020 | Done |
 
 <h3>Assumptions</h3>
 

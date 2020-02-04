@@ -18,5 +18,9 @@ namespace DexterLab.Models.Data
         public string PhoneNumber { get; set; }
         public string Department { get; set; }
         public string Password { get; set; }
+        public bool EmailConfirm { get; set; }
+        public string ActivationCode { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
     }
 }
