@@ -20,6 +20,7 @@ namespace DexterLab.Models.Data
         public string Password { get; set; }
         public bool EmailConfirm { get; set; }
         public string ActivationCode { get; set; }
+        public string ResetCode { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
     }

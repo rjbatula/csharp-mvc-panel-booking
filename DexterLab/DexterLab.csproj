@@ -142,6 +142,7 @@
     <Compile Include="Models\Data\UserDTO.cs" />
     <Compile Include="Models\Data\UserRoleDTO.cs" />
     <Compile Include="Models\ViewModels\LoginUserVM.cs" />
+    <Compile Include="Models\ViewModels\ResetPasswordVM.cs" />
     <Compile Include="Models\ViewModels\UserProfileVM.cs" />
     <Compile Include="Models\ViewModels\UserVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -296,6 +297,9 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Account\UserProfile.cshtml" />
     <Content Include="Views\Account\Activation.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetAck.cshtml" />
+    <Content Include="Views\Account\Reset.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
