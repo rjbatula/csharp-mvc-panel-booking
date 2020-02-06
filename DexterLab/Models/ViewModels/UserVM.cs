@@ -24,6 +24,7 @@ namespace DexterLab.Models.ViewModels
             Password = row.Password;
             EmailConfirm = row.EmailConfirm;
             ActivationCode = row.ActivationCode;
+            ResetCode = row.ResetCode;
             CreatedOn = row.CreatedOn;
             ModifiedOn = row.ModifiedOn;
 
@@ -46,6 +47,7 @@ namespace DexterLab.Models.ViewModels
         public string ConfirmPassword { get; set; }
         public bool EmailConfirm { get; set; }
         public string ActivationCode { get; set; }
+        public string ResetCode { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
     }

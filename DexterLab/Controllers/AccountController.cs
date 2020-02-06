@@ -10,6 +10,7 @@ using System.Web.Security;
 using System.Net.Mail;
 using System.Net;
 using System.Configuration;
+using System.Threading;
 
 namespace DexterLab.Controllers
 {
@@ -182,6 +183,7 @@ namespace DexterLab.Controllers
                     body += "<br /><br />Please click the following link to activate your account";
                     body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Activation/{2}", Request.Url.Scheme, Request.Url.Authority, activationCode) + "'>Click here to activate your account.</a>";
                     body += "<br /><br />Thanks";
+                    body += "<br />NTT Dexter Lab";
                     mm.Body = body;
                     mm.IsBodyHtml = true;
 
@@ -191,14 +193,6 @@ namespace DexterLab.Controllers
                         smtp.EnableSsl = true;
                         smtp.Send(mm);
                     }
-                    
-                    //smtp.Host = "smtp.gmail.com";
-                    //smtp.EnableSsl = true;
-                    //NetworkCredential NetworkCred = new NetworkCredential("cruxalphonse@gmail.com", "P@ss1234");
-                    //smtp.UseDefaultCredentials = false;
-                    //smtp.Credentials = NetworkCred;
-                    //smtp.Port = 587;
-                    //smtp.Send(mm);
                 }
             }
 
@@ -212,6 +206,7 @@ namespace DexterLab.Controllers
         //GET: /Account/Activation
         public ActionResult Activation()
         {
+
             ViewBag.Message = "Invalid Activation code.";
             if (RouteData.Values["id"] != null)
             {
@@ -226,7 +221,12 @@ namespace DexterLab.Controllers
                     }
                     db.SaveChanges();
                     ViewBag.Message = "Activation successful.";
+                   
                 }
+            }
+            else
+            {
+                return Redirect("~/Account/Login");
             }
 
             return View();
@@ -338,6 +338,132 @@ namespace DexterLab.Controllers
 
 
         }
+
+        //GET: /account/reset-password
+        [ActionName("reset-password")]
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+        
+            return View("ResetPassword");
+        }
+
+        //POST: /account/reset-password
+        [ActionName("reset-password")]
+        [HttpPost]
+        public ActionResult ResetPassword(UserVM model)
+        {
+
+            using (Db db = new Db())
+            {
+                var user = db.Users.SingleOrDefault(x => x.EmailAddress.Equals(model.EmailAddress));
+
+                if (user == null)
+                {
+                    TempData["Failure"] = "The email address entered is invalid";
+                    return View("ResetPassword", model);
+                }
+                else
+                {
+                    //Create a activation GUID
+                    Guid resetCode = Guid.NewGuid();
+
+                    user.ResetCode = resetCode.ToString();
+                    user.ModifiedOn = DateTime.Now;
+
+                    //Save DTO
+                    db.SaveChanges();
+
+                    //Mail Message
+                    using (MailMessage mm = new MailMessage())
+                    {
+                        mm.From = new MailAddress("cruxalphonse@gmail.com");
+                        mm.To.Add(model.EmailAddress);
+                        mm.Subject = "Account Activation For Dexter Lab";
+                        string body = "Hello " + model.FirstName + " " + model.LastName + ",";
+                        body += "<br /><br />You recently requested to reset your password. Please click the following link to activate your account";
+                        body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Reset/{2}", Request.Url.Scheme, Request.Url.Authority, resetCode) + "'>Click here to reset your password.</a>";
+                        body += "<br /><br />Thanks";
+                        body += "<br />NTT Dexter Lab";
+                        mm.Body = body;
+                        mm.IsBodyHtml = true;
+
+                        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                        {
+                            smtp.Credentials = new NetworkCredential("cruxalphonse@gmail.com", "P@ss1234");
+                            smtp.EnableSsl = true;
+                            smtp.Send(mm);
+                        }
+                    }
+                }
+
+                //Create a tempdata message
+                TempData["Success"] = "Please check your email to reset your password";
+
+                //Redirect
+                return Redirect("~/Account/login");
+            }
+        }
+        //GET: /Account/Reset/{id}
+        [HttpGet]
+        public ActionResult Reset()
+        {
+            return View();
+        }
+        //POST: /Account/Reset/{id}
+        [HttpPost]
+        public ActionResult Reset(ResetPasswordVM model)
+        {
+
+            if (RouteData.Values["id"] != null)
+            {
+                //Check model state
+                if (!ModelState.IsValid)
+                {
+                    return View("Reset", model);
+                }
+
+                Guid resetCode = new Guid(RouteData.Values["id"].ToString());
+                using (Db db = new Db())
+                {
+                    //Check if passwords match
+                    if (!model.Password.Equals(model.ConfirmPassword))
+                    {
+                        TempData["Failure"] = "Password do not match";
+                        return View("Reset", model);
+                    }
+
+
+                    //Hash the Password
+                    CustomPasswordHasher hash = new CustomPasswordHasher();
+                    string hashedPassword = hash.HashPassword(model.Password);
+
+                    var entity = db.Users.Where(x => x.ResetCode == resetCode.ToString()).FirstOrDefault();
+                    if (entity != null)
+                    {
+                        entity.ResetCode = "";
+                        entity.Password = hashedPassword;
+
+                    }
+                    db.SaveChanges();
+                    ViewBag.Message = "Account Successfully Resetted";
+                    return RedirectToAction("ResetAck");
+                }
+            }
+            else
+            {
+                TempData["Failure"] = "RouteData is null";
+                return Redirect("~/Account/Login");
+            }
+            
+        }
+
+        public ActionResult ResetAck()
+        {
+            ViewBag.Message = "Invalid Activation code.";
+            return View();
+        }
+        
 
 
 
