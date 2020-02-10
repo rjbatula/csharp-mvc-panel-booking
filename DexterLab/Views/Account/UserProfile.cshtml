@@ -11,6 +11,13 @@
     </div>
 }
 
+@if (TempData["Failure"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Failure"]
+    </div>
+}
+
 <h2>User Profile</h2>
 
 @using (Html.BeginForm())
