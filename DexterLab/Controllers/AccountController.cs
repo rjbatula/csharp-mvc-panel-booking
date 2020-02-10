@@ -66,6 +66,13 @@ namespace DexterLab.Controllers
                     CustomPasswordHasher hash = new CustomPasswordHasher();
                     var prodPassword = hash.HashPassword(model.Password);
 
+                    //Check if users account activated
+                    if (user.EmailConfirm == confirmBool)
+                    {
+                        TempData["Failure"] = "Please check your email for account activation";
+                        return View(model);
+                    }
+
                     if (samplePassword.Equals(prodPassword))
                     {
                         isValid = true;
@@ -75,19 +82,11 @@ namespace DexterLab.Controllers
                         isValid = false;
                     }
                 }
-
-                if(user.EmailConfirm == confirmBool)
-                {
-                    TempData["Failure"] = "Please activate your account via email";
-                    //ModelState.AddModelError("", "Invalid Username or Password");
-                    return View(model);
-                }
             }
-            //Check isValid is true
+            //Check isValid is false
             if (!isValid)
             {
                 TempData["Failure"] = "Invalid Username or Password";
-                //ModelState.AddModelError("", "Invalid Username or Password");
                 return View(model);
             }
             else
@@ -120,7 +119,7 @@ namespace DexterLab.Controllers
             //Check if passwords match
             if (!model.Password.Equals(model.ConfirmPassword))
             {
-                TempData["Failure"] = "Password do not match";
+                TempData["Failure"] = "Passwords do not match";
                 return View("CreateAccount", model);
             }
 
@@ -133,7 +132,7 @@ namespace DexterLab.Controllers
                 //Make sure username is unique
                 if(db.Users.Any(x => x.EmailAddress.Equals(model.EmailAddress)))
                 {
-                    ModelState.AddModelError("", "Email Address " + model.EmailAddress + " is already registered.");
+                    TempData["Failure"] = "Email Address " + model.EmailAddress + " is already registered.";
                     model.EmailAddress = "";
                     return View("CreateAccount", model);
                 }
@@ -189,7 +188,7 @@ namespace DexterLab.Controllers
 
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                     {
-                        smtp.Credentials = new NetworkCredential("cruxalphonse@gmail.com", "P@ss1234");
+                        smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
                         smtp.EnableSsl = true;
                         smtp.Send(mm);
                     }
@@ -220,7 +219,7 @@ namespace DexterLab.Controllers
                         entity.ActivationCode = "";
                     }
                     db.SaveChanges();
-                    ViewBag.Message = "Activation successful.";
+                    ViewBag.Message = "Account Successfully Activated";
                    
                 }
             }
@@ -285,7 +284,7 @@ namespace DexterLab.Controllers
                 //Check if password and confirm password matches
                 if (!model.Password.Equals(model.ConfirmPassword))
                 {
-                    ModelState.AddModelError("", "Password do not match");
+                    TempData["Failure"] = "Passwords do not match";
                     return View("UserProfile", model);
                 }
             }
@@ -299,7 +298,7 @@ namespace DexterLab.Controllers
                 //Check if username is unique
                 if(db.Users.Where(x => x.Id != model.Id).Any(x => x.EmailAddress == emailAddress))
                 {
-                    ModelState.AddModelError("", "Username is already taken");
+                    TempData["Failure"] = "Username is already taken";
                     model.EmailAddress = "";
                     return View("UserProfile", model);
                 }
@@ -379,7 +378,7 @@ namespace DexterLab.Controllers
                     {
                         mm.From = new MailAddress("cruxalphonse@gmail.com");
                         mm.To.Add(model.EmailAddress);
-                        mm.Subject = "Account Activation For Dexter Lab";
+                        mm.Subject = "Password Recovery Request For Dexter Lab";
                         string body = "Hello " + model.FirstName + " " + model.LastName + ",";
                         body += "<br /><br />You recently requested to reset your password. Please click the following link to activate your account";
                         body += "<br /><a href = '" + string.Format("{0}://{1}/Account/Reset/{2}", Request.Url.Scheme, Request.Url.Authority, resetCode) + "'>Click here to reset your password.</a>";
@@ -390,7 +389,7 @@ namespace DexterLab.Controllers
 
                         using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                         {
-                            smtp.Credentials = new NetworkCredential("cruxalphonse@gmail.com", "P@ss1234");
+                            smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
                             smtp.EnableSsl = true;
                             smtp.Send(mm);
                         }
@@ -404,6 +403,7 @@ namespace DexterLab.Controllers
                 return Redirect("~/Account/login");
             }
         }
+
         //GET: /Account/Reset/{id}
         [HttpGet]
         public ActionResult Reset()
@@ -452,7 +452,6 @@ namespace DexterLab.Controllers
             }
             else
             {
-                TempData["Failure"] = "RouteData is null";
                 return Redirect("~/Account/Login");
             }
             
@@ -460,7 +459,7 @@ namespace DexterLab.Controllers
 
         public ActionResult ResetAck()
         {
-            ViewBag.Message = "Invalid Activation code.";
+            ViewBag.Message = "Invalid Activation Code";
             return View();
         }
         

@@ -29,7 +29,7 @@
             <label class="control-label col-md-2">Email Address</label>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger", @id = "loginEMail" })
             </div>
         </div>
 
@@ -37,7 +37,7 @@
             <label class="control-label col-md-2">Password</label>
             <div class="col-md-10">
                 @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "loginPassword" })
             </div>
         </div>
 
@@ -53,7 +53,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-primary" />
+                <input type="submit" value="Login" class="btn btn-primary" id="loginSubmit" />
             </div>
         </div>
     </div>
