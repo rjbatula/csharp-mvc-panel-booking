@@ -1,0 +1,112 @@
+﻿@model IEnumerable<DexterLab.Models.ViewModels.MyBookingsVM>
+
+@{
+    ViewBag.Title = "My Bookings";
+}
+
+
+<h2>My Bookings</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Failure"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Failure"]
+    </div>
+}
+
+@if (!(Model.Any()))
+{
+    <div class="col-md-12 text-center">
+        <br />
+        <h2>You currently have no bookings</h2>
+    </div>
+
+}
+
+else
+{
+    <table class="table col-md-12">
+        <tr>
+            <th>
+                Device Name
+            </th>
+            <th>
+                Serial No
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Allocated Panel
+            </th>
+            <th>
+                Purpose
+            </th>
+            <th>
+                Server Installed?
+            </th>
+            <th>
+                Modified By
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            var panel = item.PanelStart + " - " + item.PanelEnd;
+            var yes = "Yes";
+            var no = "No";
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeviceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DeviceSerialNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingDate)
+                </td>
+                <td>
+                    @if (item.PanelStart.Equals(item.PanelEnd))
+                    {
+                        @Html.DisplayFor(modelItem => item.PanelStart)
+                    }
+                    else
+                    {
+                        @panel
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingPurpose)
+                </td>
+                <td>
+                    @if (item.ServerInstalled.Equals(false))
+                    {
+                        @no
+                    }
+                    else
+                    {
+                        @yes
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModifiedBy)
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="~/Booking/edit-booking/@item.Id">Edit</a>
+                    <a class="btn btn-danger" href="~/Booking/delete-booking/@item.Id" onclick="return confirm('Are you sure you want to delete this item?')";>Delete</a>
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+
