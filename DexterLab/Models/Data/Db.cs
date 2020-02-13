@@ -12,6 +12,8 @@ namespace DexterLab.Models.Data
         public DbSet<RoleDTO> Roles { get; set; }
         public DbSet<UserRoleDTO> UserRoles { get; set; }
 
+        public DbSet<BookingDTO> Bookings { get; set; }
+
 
     }
 }

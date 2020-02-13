@@ -13,6 +13,7 @@ namespace DexterLab
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            routes.MapRoute("Booking", "Booking/{action}/{id}", new { controller = "Booking", action = "Index", id = UrlParameter.Optional }, new[] { "DexterLab.Controllers" });
             routes.MapRoute("Account", "Account/{action}/{id}", new { controller = "Account", action = "Index", id = UrlParameter.Optional }, new[] { "DexterLab.Controllers" });
 
             
