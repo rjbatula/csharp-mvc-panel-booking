@@ -3,9 +3,13 @@ using DexterLab.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -110,7 +114,7 @@ namespace DexterLab.Controllers
                 }
                 else
                 {
-                    
+
                     if (model.DeviceName == "Palo Alto")
                     {
 
@@ -131,20 +135,20 @@ namespace DexterLab.Controllers
                         //Check if initial panel no is != to PanelStart or PanelEnd
                         if ((!(db.Bookings.Any(x => x.PanelEnd.Equals(xCounter)))) && (!(db.Bookings.Any(x => x.PanelStart.Equals(xCounter)))))
                         {
-                            
+
                             ds--;
                         }
                         else
                         {
                             xCounter++; //Add one in Counter
                             ds = elseDev; //Reset to OG
-                                              //if xCounter has reach maxPanel, tempdata error that all panels are book for the or not space are not sufficient for booking
+                                          //if xCounter has reach maxPanel, tempdata error that all panels are book for the or not space are not sufficient for booking
                             if (xCounter > maxPanel)
                             {
                                 TempData["Failure"] = "There are no sufficient space for booking any panel on this date.";
                                 return View("BookPhysicalDevice", model);
                             }
-                            
+
                         }
                         finalCounter = xCounter;
                     }
@@ -162,7 +166,7 @@ namespace DexterLab.Controllers
                             DeviceSpace = elseDev,
                             BookingDate = model.BookingDate,
                             PanelStart = xCounter,
-                            PanelEnd = xCounter + (elseDev-1),
+                            PanelEnd = xCounter + (elseDev - 1),
                             BookingPurpose = model.BookingPurpose,
                             ServerInstalled = false,
                             ModifiedBy = "",
@@ -172,7 +176,7 @@ namespace DexterLab.Controllers
                         db.SaveChanges();
                         //StartPanel = xCounter End Panel = xCounter plus devicespace
                         //Check if Identity is equals to the Email Address
-                        
+
                         if (db.Users.Where(a => a.EmailAddress == email).Any())
                         {
                             int finalCount = xCounter + (elseDev - 1);
@@ -192,7 +196,7 @@ namespace DexterLab.Controllers
                                 {
                                     body += "<br /><br />Panel Booked: Panel " + xCounter + " to Panel " + finalCount;
                                 }
-                                body += "<br /><br />Purpose of Booking: " + model.BookingPurpose ;
+                                body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
                                 body += "<br /><br />Regards, ";
                                 body += "<br />NTT Dexter Lab";
                                 mm.Body = body;
@@ -221,7 +225,7 @@ namespace DexterLab.Controllers
         [ActionName("my-bookings")]
         public ActionResult MyBookings()
         {
-            
+
 
             using (Db db = new Db())
             {
@@ -286,19 +290,19 @@ namespace DexterLab.Controllers
                     model.DeviceSerialNo = dto.DeviceSerialNo;
                     model.BookingPurpose = dto.BookingPurpose;
                     model.ServerInstalled = dto.ServerInstalled;
-                    
+
                 }
                 else
                 {
                     TempData["Failure"] = "Invalid Panel Booking Edit Request";
                     return RedirectToAction("my-bookings");
                 }
-                
+
 
                 return View("EditBooking", model);
             }
-            
-            
+
+
         }
 
         //POST: /Booking/EditBooking/id
@@ -315,14 +319,14 @@ namespace DexterLab.Controllers
 
             using (Db db = new Db())
             {
-                if(db.Bookings.Any(x => x.Id.Equals(model.Id)))
+                if (db.Bookings.Any(x => x.Id.Equals(model.Id)))
                 {
                     BookingDTO dto = db.Bookings.Find(model.Id);
                     dto.DeviceSerialNo = model.DeviceSerialNo;
                     dto.BookingPurpose = model.BookingPurpose;
                     dto.ServerInstalled = model.ServerInstalled;
                     dto.ModifiedBy = email;
-                   
+
                     db.SaveChanges();
                 }
                 else
@@ -352,5 +356,55 @@ namespace DexterLab.Controllers
             TempData["Success"] = "You have successfully remove your booking";
             return RedirectToAction("my-bookings");
         }
-    }
+
+        //GET: /Booking/SpinVirtual/id
+        [ActionName("spin-virtual")]
+        [HttpGet]
+        public ActionResult SpinVirtual(int id)
+        {
+            using (Db db = new Db())
+            {
+                BookingDTO dto = db.Bookings.Find(id);
+
+
+
+            }
+            string VM = @"c:\temp\virtual.bat";
+            string REDIRECT = @"c:\temp\redirect.bat";
+
+            if (!System.IO.File.Exists(REDIRECT))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = System.IO.File.CreateText(REDIRECT))
+                {
+                    sw.WriteLine("cd C:/temp");
+                    sw.WriteLine("virtual.bat");
+
+                }
+            }
+                if (!System.IO.File.Exists(VM))
+                {
+                    // Create a file to write to.
+                    using (StreamWriter sw = System.IO.File.CreateText(VM))
+                    {
+                        sw.WriteLine("@echo off");
+                        sw.WriteLine("cmdkey /generic:" + '"' + "192.168.15.41" + '"' + " /user:" + '"' + "SGMAIL" + Regex.Escape("\r") + "alphjoshua.batula" + '"' + " /pass:" + '"' + "P@ssw0rd" + '"');
+                        sw.WriteLine("mstsc /f /v:" + '"' + "192.168.15.41" + '"');
+                        sw.WriteLine("cmdkey /delete:" + '"' + "192.168.15.41" + '"');
+
+                    }
+
+                }
+
+                string command = "/C cd C:/temp/ & redirect.bat";
+                System.Diagnostics.Process.Start("cmd.exe", command);
+
+            TempData["Success"] = "VM is spinning...";
+            return RedirectToAction("my-bookings");
+
+
+        }
+            
+        }
+    
 }

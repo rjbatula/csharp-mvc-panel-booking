@@ -144,10 +144,13 @@
     <Compile Include="Models\Data\UserDTO.cs" />
     <Compile Include="Models\Data\UserRoleDTO.cs" />
     <Compile Include="Models\ViewModels\BookingVM.cs" />
+    <Compile Include="Models\ViewModels\CommonVM.cs" />
     <Compile Include="Models\ViewModels\EditBookingsVM.cs" />
+    <Compile Include="Models\ViewModels\GenericBookingVM.cs" />
     <Compile Include="Models\ViewModels\LoginUserVM.cs" />
     <Compile Include="Models\ViewModels\MyBookingsVM.cs" />
     <Compile Include="Models\ViewModels\ResetPasswordVM.cs" />
+    <Compile Include="Models\ViewModels\SearchDateVM.cs" />
     <Compile Include="Models\ViewModels\UserProfileVM.cs" />
     <Compile Include="Models\ViewModels\UserVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -287,7 +290,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Index2.cshtml" />
     <Content Include="Views\Account\CreateAccount.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\UserNavPartial.cshtml" />
@@ -310,6 +313,7 @@
     <Content Include="Views\Booking\BookPhysicalDevice.cshtml" />
     <Content Include="Views\Booking\MyBookings.cshtml" />
     <Content Include="Views\Booking\EditBooking.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
