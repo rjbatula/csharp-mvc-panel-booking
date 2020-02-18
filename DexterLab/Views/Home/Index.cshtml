@@ -1,31 +1,151 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model IEnumerable<DexterLab.Models.ViewModels.GenericBookingVM>
+
+@{
+    ViewBag.Title = "Index";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+@using (Html.BeginForm("Index", "Home", FormMethod.Get))
+{
+    <center>
+        <input id ="StartDate" class="form-control col-md-6" type="date" name="startDate" value="@DateTime.Today.Date.ToString()" />
+        <br />
+        <input class="btn btn-primary form-control col-md-2" type="submit" name="submit" value="Search" />
+    </center>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+}
+
+<br />
+<center>
+    @if (!(Model.Any()))
+    {
+        for (int x = 1; x <= 10; x++)
+        {
+            <div class="container border border-dark-50">
+                <div class="row">
+                    <br />
+                    <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                        Panel @x - Not Booked
+                    </div>
+                    <br />
+                    &nbsp;
+                    <br />
+                    <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                        Panel @(x + 10) - Not Booked
+                    </div>
+                    <br />
+                    &nbsp;
+                    <br />
+                    <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                        Panel @(x + 20) - Not Booked
+                    </div>
+                    <br />
+                </div>
+            </div>
+        }
+    }
+
+    else
+    {
+        Dictionary<int, bool> data = new Dictionary<int, bool>();
+        foreach (var item in Model)
+        {
+            if (item.PanelStart.Equals(item.PanelEnd))
+            {
+                data.Add(item.PanelStart, item.ServerInstalled);
+            }
+            else
+            {
+                data.Add(item.PanelStart, item.ServerInstalled);
+                data.Add(item.PanelEnd, item.ServerInstalled);
+            }
+        }
+
+        for (int x = 1; x <= 10; x++)
+        {
+            <div class="container border border-dark-50 ">
+                <div class="row">
+                    @if (data.ContainsKey(x) && data[x].Equals(true))
+                    {
+                        <br />
+                        <div class=" card card-columns col-sm col-md text-center bg-success border border-success-50 justify-content-center">
+                            Panel @x - Booked w/ Server Installed
+                        </div>
+                        <br />
+                    }
+                    else if (data.ContainsKey(x) && data[x].Equals(false))
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-warning border border-warning-50 justify-content-center">
+                            Panel @x - Booked w/ Server Not Installed
+                        </div>
+                        <br />
+                    }
+                    else
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                            Panel @x - Not Booked
+                        </div>
+                        <br />
+                    }
+
+                    &nbsp;
+
+                    @if (data.ContainsKey(x + 10) && data[x + 10].Equals(true))
+                    {
+                        <br />
+                        <div class=" card card-columns col-sm col-md text-center bg-success border border-success-50 justify-content-center">
+                            Panel @(x + 10) - Booked w/ Server Installed
+                        </div>
+                        <br />
+                    }
+                    else if (data.ContainsKey(x + 10) && data[x + 10].Equals(false))
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-warning border border-warning-50 justify-content-center">
+                            Panel @(x + 10) - Booked w/ Server Not Installed
+                        </div>
+                        <br />
+                    }
+                    else
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                            Panel @(x + 10) - Not Booked
+                        </div>
+                        <br />
+                    }
+
+                    &nbsp;
+
+                    @if (data.ContainsKey(x + 20) && data[x + 20].Equals(true))
+                    {
+                        <br />
+                        <div class=" card card-columns col-sm col-md text-center bg-success border border-success-50 justify-content-center">
+                            Panel @(x + 20) - Booked w/ Server Installed
+                        </div>
+                        <br />
+                    }
+                    else if (data.ContainsKey(x + 20) && data[x + 20].Equals(false))
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-warning border border-warning-50 justify-content-center">
+                            Panel @(x + 20) - Booked w/ Server Not Installed
+                        </div>
+                        <br />
+                    }
+                    else
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                            Panel @(x + 20) - Not Booked
+                        </div>
+                        <br />
+
+                    }
+                </div>
+            </div>
+
+        }
+    }
+</center>

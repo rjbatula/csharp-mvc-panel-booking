@@ -28,12 +28,13 @@ Update your progress over here:
 | DL-03 |  Registration |  Joshua | 3 Feb 2020 | Done |
 |DL-04| User Profiling / Edit Profile | Joshua | 4 Feb 2020 | Done |
 |DL-05| User Account Activation via Email | Joshua | 4 Feb 2020 | Done |
-|DL-06| Password Recovery via Email | Joshua | 6 Feb 2020 | Done |
-|DL-07| Create Panel Booking | Joshua | 12 Feb 2020 | Done |
-|DL-08| View My Bookings | Joshua | 12 Feb 2020 | Done |
-|DL-09| Edit Panel Booking | Joshua | 13 Feb 2020 | Done |
-|DL-10| Delete Panel Booking | Joshua | 13 Feb 2020 | Done |
-|DL-11| Show Booking at Home  | Joshua | 13 Feb 2020 | In Progress |
+|DL-06| Password Recovery via Email | Joshua | 6 Feb 2020 | Done|
+|DL-07| Create Panel Booking | Joshua | 12 Feb 2020 |Done|
+|DL-08| View My Bookings | Joshua | 12 Feb 2020 |Done|
+|DL-09| Edit Panel Booking | Joshua | 13 Feb 2020 |Done|
+|DL-10| Delete Panel Booking | Joshua | 13 Feb 2020 |Done|
+|DL-11| Show Booking at Home  | Joshua | 17 Feb 2020 |Done|
+|DL-12| Button to Start Remote Desktop Connection  | Joshua | 18 Feb 2020 |Done|
 
 <h3>Assumptions</h3>
 
