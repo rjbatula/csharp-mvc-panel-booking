@@ -18,9 +18,10 @@ namespace DexterLab.Controllers
     public class BookingController : Controller
     {
         // GET: Booking
+        [ActionName("select-booking")]
         public ActionResult Index()
         {
-            return View();
+            return View("Index");
         }
 
         //GET: /Booking/BookPhysicalDevice
@@ -133,7 +134,7 @@ namespace DexterLab.Controllers
                     while (ds != 0)
                     {
                         //Check if initial panel no is != to PanelStart or PanelEnd
-                        if ((!(db.Bookings.Any(x => x.PanelEnd.Equals(xCounter)))) && (!(db.Bookings.Any(x => x.PanelStart.Equals(xCounter)))))
+                        if ((!(db.Bookings.Where(x => x.BookingDate.Equals(model.BookingDate)).Any(x => x.PanelEnd.Equals(xCounter)))) && (!(db.Bookings.Where(x => x.BookingDate.Equals(model.BookingDate)).Any(x => x.PanelStart.Equals(xCounter)))))
                         {
 
                             ds--;
@@ -218,7 +219,7 @@ namespace DexterLab.Controllers
             TempData["Success"] = "You have successfully booked the panel. Check your email for confirmation.";
 
             //Redirect
-            return Redirect("~/Booking/Index");
+            return Redirect("~/Booking/select-booking");
         }
 
         //GET: /Booking/MyBooking
