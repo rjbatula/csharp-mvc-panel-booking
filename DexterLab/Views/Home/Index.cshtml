@@ -1,23 +1,28 @@
 ﻿@model IEnumerable<DexterLab.Models.ViewModels.GenericBookingVM>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Home Page";
 }
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Get))
 {
     <center>
-        <input id ="StartDate" class="form-control col-md-6" type="date" name="startDate" value="@DateTime.Today.Date.ToString()" />
+        <input id="StartDate" class="form-control col-md-6" type="date" name="startDate"/>
         <br />
-        <input class="btn btn-primary form-control col-md-2" type="submit" name="submit" value="Search" />
+        <input class="btn btn-primary form-control col-md-2 mt-n3" type="submit" name="submit" value="Search" />
     </center>
 
 }
 
 <br />
+@if (TempData["date"] != null)
+    {
+        <h5 class="text-center font-weight-bold mt-n1">@TempData["date"]</h5>
+    }
 <center>
     @if (!(Model.Any()))
     {
+
         for (int x = 1; x <= 10; x++)
         {
             <div class="container border border-dark-50">
