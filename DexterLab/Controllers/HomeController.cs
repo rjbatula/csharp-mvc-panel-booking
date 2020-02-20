@@ -29,7 +29,7 @@ namespace DexterLab.Controllers
                         ServerInstalled = x.ServerInstalled
 
                     }).ToList().Where(x => x.BookingDate == startDate);
-                    TempData["date"] = startDate.Value.ToString("MMM dd yyyy");
+                    TempData["date"] = startDate.Value.ToString("MMMM dd yyyy");
                     return View("Index", model);
                     
                 }
@@ -45,7 +45,7 @@ namespace DexterLab.Controllers
                         ServerInstalled = x.ServerInstalled
 
                     }).ToList().Where(x => x.BookingDate.Equals(DateTime.Today.Date));
-                    TempData["date"] = DateTime.Today.Date.ToString("MMM dd yyyy");
+                    TempData["date"] = DateTime.Today.Date.ToString("MMMM dd yyyy");
                     return View("Index", model);
                 }
                 

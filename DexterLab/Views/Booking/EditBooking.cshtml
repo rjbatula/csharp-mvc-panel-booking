@@ -4,7 +4,6 @@
     ViewBag.Title = "EditBooking";
 }
 
-<h2>EditBooking</h2>
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">
@@ -17,6 +16,8 @@
         @TempData["Failure"]
     </div>
 }
+
+<h2>EditBooking</h2>
 
 @using (Html.BeginForm())
 {
