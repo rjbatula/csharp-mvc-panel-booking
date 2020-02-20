@@ -8,7 +8,7 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body>
+<body class="bg-light">
     <br />
     <nav class="nav navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
@@ -93,12 +93,6 @@
     <div class="container-fluid body-content ">
         @RenderBody()
     </div>
-    <br />
-    <footer class="bg-dark text-white mb-md-n5 ">
-        <br />
-        <p class="text-center bg-dark" >NTT | Dexter's Lab &copy; @DateTime.Now.Year</p>
-        <br />
-    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

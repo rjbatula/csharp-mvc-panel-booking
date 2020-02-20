@@ -4,9 +4,6 @@
     ViewBag.Title = "My Bookings";
 }
 
-
-<h2>My Bookings</h2>
-
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">
@@ -19,6 +16,8 @@
         @TempData["Failure"]
     </div>
 }
+
+<h2>My Bookings</h2>
 
 @if (!(Model.Any()))
 {
@@ -96,9 +95,9 @@ else
                 <td>
                     <a class="btn btn-primary" href="~/Booking/edit-booking/@item.Id">Edit</a>
                     <a class="btn btn-danger" href="~/Booking/delete-booking/@item.Id" onclick="return confirm('Are you sure you want to delete this item?')" ;>Delete</a>
-                    @if (item.ServerInstalled.Equals(true))
+                    @if (item.ServerInstalled.Equals(true) && item.BookingDate.Equals(DateTime.Today.Date))
                     {
-                        <a class="btn btn-info" href="~/Booking/spin-virtual/@item.Id">Spin VM</a>
+                        <a class="btn btn-info" href="~/Booking/spin-virtual/@item.Id">Virtualize</a>
                     }
                 </td>
             </tr>

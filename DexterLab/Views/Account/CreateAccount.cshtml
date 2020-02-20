@@ -4,8 +4,6 @@
     ViewBag.Title = "CreateAccount";
 }
 
-<h2>Create Account</h2>
-
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">
@@ -19,6 +17,8 @@
         @TempData["Failure"]
     </div>
 }
+
+<h2>Create Account</h2>
 
 @using (Html.BeginForm())
 {
@@ -63,12 +63,12 @@
             <label class="control-label col-md-2">Department</label>
             <div class="col-md-10">
                 @*@Html.DropDownListFor(model => model.Department, new SelectList(Enum.GetValues(typeof())), "Select Department")*@
-                @Html.DropDownListFor(model => model.Department, new List<SelectListItem> 
+                @Html.DropDownListFor(model => model.Department, new List<SelectListItem>
                 {
-                   new SelectListItem { Text = "Services", Value = "Services", Selected=true},  
-                   new SelectListItem { Text = "HR", Value = "HR"},  
+                   new SelectListItem { Text = "Services", Value = "Services", Selected=true},
+                   new SelectListItem { Text = "HR", Value = "HR"},
                    new SelectListItem { Text = "Sales", Value = "Sales"},
-                   new SelectListItem { Text = "Operations", Value = "Operations"}      
+                   new SelectListItem { Text = "Operations", Value = "Operations"}
                 }, "Select Department", new { @class = "form-control" })
                 @*@Html.EditorFor(model => model.Department, new { htmlAttributes = new { @class = "form-control" } })*@
                 @Html.ValidationMessageFor(model => model.Department, "", new { @class = "text-danger" })

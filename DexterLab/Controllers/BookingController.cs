@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -51,6 +52,12 @@ namespace DexterLab.Controllers
 
             using (Db db = new Db())
             {
+                var parseDate = DateTime.ParseExact(model.BookingDate.ToString("MM/dd/yyyy"), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                var todayDate = DateTime.Today;
+                if(parseDate < todayDate){
+                    TempData["Failure"] = "You cannot book a date that already passed.";
+                    return View("BookPhysicalDevice", model);
+                }
                 //Check if date is unique
                 if (!(db.Bookings.Any(x => x.BookingDate.Equals(model.BookingDate))))
                 {
@@ -372,6 +379,7 @@ namespace DexterLab.Controllers
             }
             string VM = @"c:\temp\virtual.bat";
             string REDIRECT = @"c:\temp\redirect.bat";
+            string Del = @"c:\temp\delete.bat";
 
             if (!System.IO.File.Exists(REDIRECT))
             {
@@ -396,8 +404,21 @@ namespace DexterLab.Controllers
                     }
 
                 }
+            if (!System.IO.File.Exists(Del))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = System.IO.File.CreateText(Del))
+                {
+                    sw.WriteLine("@echo off");
+                    sw.WriteLine("del virtual.bat");
+                    sw.WriteLine("del redirect.bat");
+                    sw.WriteLine("del delete.bat");
 
-                string command = "/C cd C:/temp/ & redirect.bat";
+                }
+
+            }
+
+            string command = "/C cd C:/temp/ & @echo off & redirect.bat & delete.bat";
                 System.Diagnostics.Process.Start("cmd.exe", command);
 
             TempData["Success"] = "VM is spinning...";
