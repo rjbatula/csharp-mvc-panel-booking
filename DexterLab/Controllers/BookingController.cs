@@ -73,6 +73,7 @@ namespace DexterLab.Controllers
                         countDev = 2;
                     }
 
+
                     //Continue with the booking
                     BookingDTO bookingDTO = new BookingDTO()
                     {
@@ -140,6 +141,12 @@ namespace DexterLab.Controllers
                     //While loop for ds != 0
                     while (ds != 0)
                     {
+                        if ((xCounter + (elseDev - 1)) > maxPanel)
+                        {
+                            TempData["Failure"] = "There are no sufficient space for booking any panel on this date.";
+                            return View("BookPhysicalDevice", model);
+                        }
+
                         //Check if initial panel no is != to PanelStart or PanelEnd
                         if ((!(db.Bookings.Where(x => x.BookingDate.Equals(model.BookingDate)).Any(x => x.PanelEnd.Equals(xCounter)))) && (!(db.Bookings.Where(x => x.BookingDate.Equals(model.BookingDate)).Any(x => x.PanelStart.Equals(xCounter)))))
                         {
@@ -148,16 +155,12 @@ namespace DexterLab.Controllers
                         }
                         else
                         {
-                            xCounter++; //Add one in Counter
                             ds = elseDev; //Reset to OG
-                                          //if xCounter has reach maxPanel, tempdata error that all panels are book for the or not space are not sufficient for booking
-                            if (xCounter > maxPanel)
-                            {
-                                TempData["Failure"] = "There are no sufficient space for booking any panel on this date.";
-                                return View("BookPhysicalDevice", model);
-                            }
+                            xCounter++; //Add one in Counter
+                                        //if xCounter has reach maxPanel, tempdata error that all panels are book for the or not space are not sufficient for booking
 
                         }
+
                         finalCounter = xCounter;
                     }
 
