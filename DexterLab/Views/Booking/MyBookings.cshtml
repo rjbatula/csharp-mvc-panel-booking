@@ -95,9 +95,9 @@ else
                 <td>
                     <a class="btn btn-primary" href="~/Booking/edit-booking/@item.Id">Edit</a>
                     <a class="btn btn-danger" href="~/Booking/delete-booking/@item.Id" onclick="return confirm('Are you sure you want to delete this item?')" ;>Delete</a>
-                    @if (item.ServerInstalled.Equals(true) && item.BookingDate.Equals(DateTime.Today.Date))
+                    @if (item.ServerInstalled.Equals(true) && item.BookingDate.Equals(DateTime.Today.Date) && (!item.IPAddress.Equals(null)) && (!item.Username.Equals(null)) && (!item.Password.Equals(null)))
                     {
-                        <a class="btn btn-info" href="~/Booking/spin-virtual/@item.Id">Virtualize</a>
+                        <a class="btn btn-info" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
                     }
                 </td>
             </tr>

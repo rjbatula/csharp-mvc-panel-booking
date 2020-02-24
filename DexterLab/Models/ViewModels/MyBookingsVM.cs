@@ -29,6 +29,9 @@ namespace DexterLab.Models.ViewModels
             ServerInstalled = row.ServerInstalled;
             ModifiedBy = row.ModifiedBy;
             CreatedBy = row.CreatedBy;
+            IPAddress = row.IPAddress;
+            Username = row.Username;
+            Password = row.Password;
         }
 
         public MyBookingsVM(BookingDTO dto)
@@ -59,5 +62,12 @@ namespace DexterLab.Models.ViewModels
         public string ModifiedBy { get; set; }
         [Required]
         public string CreatedBy { get; set; }
+        [Required]
+        public string IPAddress { get; set; }
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        public string Password { get; set; }
+
     }
 }

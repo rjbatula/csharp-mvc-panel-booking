@@ -86,7 +86,11 @@ namespace DexterLab.Controllers
                         BookingPurpose = model.BookingPurpose,
                         ServerInstalled = false,
                         ModifiedBy = "",
-                        CreatedBy = email
+                        CreatedBy = email,
+                        IPAddress = "",
+                        Username = "",
+                        Password = ""
+
                     };
 
                     db.Bookings.Add(bookingDTO);
@@ -181,7 +185,10 @@ namespace DexterLab.Controllers
                             BookingPurpose = model.BookingPurpose,
                             ServerInstalled = false,
                             ModifiedBy = "",
-                            CreatedBy = email
+                            CreatedBy = email,
+                            IPAddress = "",
+                            Username = "",
+                            Password = ""
                         };
                         db.Bookings.Add(booking2DTO);
                         db.SaveChanges();
@@ -256,7 +263,10 @@ namespace DexterLab.Controllers
                     BookingPurpose = x.BookingPurpose,
                     ServerInstalled = x.ServerInstalled,
                     ModifiedBy = x.ModifiedBy,
-                    CreatedBy = x.CreatedBy
+                    CreatedBy = x.CreatedBy,
+                    IPAddress = x.IPAddress,
+                    Username = x.Username,
+                    Password = x.Password
 
                 }).ToList().Where(x => x.CreatedBy.Equals(email));
 
@@ -301,6 +311,11 @@ namespace DexterLab.Controllers
                     model.DeviceSerialNo = dto.DeviceSerialNo;
                     model.BookingPurpose = dto.BookingPurpose;
                     model.ServerInstalled = dto.ServerInstalled;
+                    model.IPAddress = dto.IPAddress;
+                    model.Username = dto.Username;
+                    model.Password = "";
+                    model.ConfirmPassword = "";
+
 
                 }
                 else
@@ -326,6 +341,17 @@ namespace DexterLab.Controllers
                 return View("EditBooking", model);
             }
 
+            //Check if password is not empty
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                //Check if password and confirm password matches
+                if (!model.Password.Equals(model.ConfirmPassword))
+                {
+                    TempData["Failure"] = "Passwords do not match";
+                    return View("EditBooking", model);
+                }
+            }
+
             string email = User.Identity.Name;
 
             using (Db db = new Db())
@@ -337,6 +363,26 @@ namespace DexterLab.Controllers
                     dto.BookingPurpose = model.BookingPurpose;
                     dto.ServerInstalled = model.ServerInstalled;
                     dto.ModifiedBy = email;
+                    dto.IPAddress = model.IPAddress;
+                    dto.Username = model.Username;
+                    if (!string.IsNullOrEmpty(model.Password))
+                    {
+                        if (model.Password.Equals(model.ConfirmPassword))
+                        {
+                            dto.Password = model.Password;
+                        }
+                    }
+                    
+                    //if (!string.IsNullOrEmpty(model.Password))
+                    //{
+                    //    CustomPasswordHasher hash = new CustomPasswordHasher();
+                    //    string hashedPassword = hash.HashPassword(model.Password);
+
+                    //    if (model.Password.Equals(model.ConfirmPassword))
+                    //    {
+                    //        dto.Password = hashedPassword;
+                    //    }
+                    //}
 
                     db.SaveChanges();
                 }
@@ -373,13 +419,17 @@ namespace DexterLab.Controllers
         [HttpGet]
         public ActionResult SpinVirtual(int id)
         {
+            string ipAdd, userName, pass;
+
             using (Db db = new Db())
             {
                 BookingDTO dto = db.Bookings.Find(id);
-
-
-
+                ipAdd = dto.IPAddress;
+                userName = dto.Username;
+                pass = dto.Password;
             }
+
+
             string VM = @"c:\temp\virtual.bat";
             string REDIRECT = @"c:\temp\redirect.bat";
             string Del = @"c:\temp\delete.bat";
@@ -400,9 +450,12 @@ namespace DexterLab.Controllers
                     using (StreamWriter sw = System.IO.File.CreateText(VM))
                     {
                         sw.WriteLine("@echo off");
-                        sw.WriteLine("cmdkey /generic:" + '"' + "192.168.15.41" + '"' + " /user:" + '"' + "SGMAIL" + Regex.Escape("\r") + "alphjoshua.batula" + '"' + " /pass:" + '"' + "P@ssw0rd" + '"');
-                        sw.WriteLine("mstsc /f /v:" + '"' + "192.168.15.41" + '"');
-                        sw.WriteLine("cmdkey /delete:" + '"' + "192.168.15.41" + '"');
+                        //sw.WriteLine("cmdkey /generic:" + '"' + "192.168.15.41" + '"' + " /user:" + '"' + "SGMAIL" + Regex.Escape("\r") + "alphjoshua.batula" + '"' + " /pass:" + '"' + "P@ssw0rd" + '"');
+                        //sw.WriteLine("mstsc /f /v:" + '"' + "192.168.15.41" + '"');
+                        //sw.WriteLine("cmdkey /delete:" + '"' + "192.168.15.41" + '"');
+                        sw.WriteLine("cmdkey /generic:" + '"' + ipAdd + '"' + " /user:" + '"' + userName + '"' + " /pass:" + '"' + pass + '"');
+                        sw.WriteLine("mstsc /f /v:" + '"' + ipAdd + '"');
+                        sw.WriteLine("cmdkey /delete:" + '"' + ipAdd + '"');
 
                     }
 

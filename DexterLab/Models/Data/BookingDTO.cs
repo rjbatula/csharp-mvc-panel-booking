@@ -22,5 +22,9 @@ namespace DexterLab.Models.Data
         public bool ServerInstalled { get; set; }
         public string ModifiedBy { get; set; }
         public string CreatedBy { get; set; }
+        public string IPAddress { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+
     }
 }
