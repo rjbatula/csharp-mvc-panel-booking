@@ -35,6 +35,7 @@ Update your progress over here:
 |DL-10| Delete Panel Booking | Joshua | 13 Feb 2020 |Done|
 |DL-11| Show Booking at Home  | Joshua | 17 Feb 2020 |Done|
 |DL-12| Button to Start Remote Desktop Connection  | Joshua | 18 Feb 2020 |Done|
+|DL-13| Dyanmic Credentials for RDC  | Joshua | 21 Feb 2020 |Done|
 
 <h3>Assumptions</h3>
 
