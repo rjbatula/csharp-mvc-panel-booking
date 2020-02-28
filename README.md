@@ -35,14 +35,15 @@ Update your progress over here:
 |DL-10| Delete Panel Booking | Joshua | 13 Feb 2020 |Done|
 |DL-11| Show Booking at Home  | Joshua | 17 Feb 2020 |Done|
 |DL-12| Button to Start Remote Desktop Connection  | Joshua | 18 Feb 2020 |Done|
-|DL-13| Dyanmic Credentials for RDC  | Joshua | 21 Feb 2020 |Done|
+|DL-13| Dynamic Credentials for RDC  | Joshua | 21 Feb 2020 |Done|
+|DL-14| Responsive UI for App  | Joshua | 28 Feb 2020 |Done|
 
 <h3>Assumptions</h3>
 
 <hr>
 
 1. We assumed that we know who is using the panels that were already in the room.
-2. We Assumed that we know the purpose of testoing for each device that were already in the room.
+2. We Assumed that we know the purpose of testing for each device that were already in the room.
 
 <h3>Devices</h3>
 
