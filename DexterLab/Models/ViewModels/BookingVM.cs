@@ -20,6 +20,7 @@ namespace DexterLab.Models.ViewModels
             DeviceSerialNo = row.DeviceSerialNo;
             DeviceType = row.DeviceType;
             BookingDate = row.BookingDate;
+            BookingEndDate = row.BookingEndDate;
             BookingPurpose = row.BookingPurpose;
 
         }
@@ -36,6 +37,11 @@ namespace DexterLab.Models.ViewModels
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BookingDate { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        public DateTime BookingEndDate { get; set; }
         [Required]
         public string BookingPurpose { get; set; }
     }

@@ -38,11 +38,7 @@ namespace DexterLab.Controllers
         [HttpPost]
         public ActionResult BookPhysicalDevice(BookingVM model)
         {
-            int finalCounter;
-            int countDev;
-            int elseDev;
-            int startCounter = 1;
-            int xCounter = 1;
+            
             //Check if Mode State is valid
             if (!ModelState.IsValid)
             {
@@ -52,166 +48,61 @@ namespace DexterLab.Controllers
 
             using (Db db = new Db())
             {
-                var parseDate = DateTime.ParseExact(model.BookingDate.ToString("MM/dd/yyyy"), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                var startDate = DateTime.ParseExact(model.BookingDate.ToString("MM/dd/yyyy"), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                var endDate = DateTime.ParseExact(model.BookingEndDate.ToString("MM/dd/yyyy"), "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                DateTime parseDate;
                 var todayDate = DateTime.Today;
-                if(parseDate < todayDate){
+                if(startDate < todayDate || endDate < todayDate){
                     TempData["Failure"] = "You cannot book a date that already passed.";
                     return View("BookPhysicalDevice", model);
                 }
 
                 //START with DATE COMPARISON HERE//
-
-                //Check if date is unique
-                if (!(db.Bookings.Any(x => x.BookingDate.Equals(model.BookingDate))))
+                for (parseDate = startDate; parseDate <= endDate; parseDate = parseDate.AddDays(1))
                 {
-                    string email = User.Identity.Name;
+                    
 
-                    if (model.DeviceName == "Palo Alto")
+                    //Check if date is unique
+                    if (!(db.Bookings.Any(x => x.BookingDate.Equals(parseDate))))
                     {
+                        int startCounter = 1;
+                        int countDev = 0;
+                        string email = User.Identity.Name;
 
-                        countDev = 1;
-                    }
-                    else
-                    {
-                        countDev = 2;
-                    }
-
-                    int startP;
-                    int endP;
-                    if(model.DeviceType == "Physical")
-                    {
-                        startP = startCounter;
-                        endP = countDev;
-                    }
-                    else
-                    {
-                        startP = 0;
-                        endP = 0;
-                    }
-
-                    //Continue with the booking
-                    BookingDTO bookingDTO = new BookingDTO()
-                    {
-                        DeviceName = model.DeviceName,
-                        DeviceSerialNo = model.DeviceSerialNo,
-                        DeviceSpace = countDev,
-                        DeviceType = model.DeviceType,
-                        BookingDate = model.BookingDate,
-                        PanelStart = startP,
-                        PanelEnd = endP,
-                        BookingPurpose = model.BookingPurpose,
-                        ServerInstalled = false,
-                        ModifiedBy = "",
-                        CreatedBy = email,
-                        IPAddress = "",
-                        Username = "",
-                        Password = ""
-
-                    };
-
-                    db.Bookings.Add(bookingDTO);
-                    db.SaveChanges();
-
-                    //Check if Identity is equals to the Email Address
-
-                    if (db.Users.Where(a => a.EmailAddress == email).Any())
-                    {
-                        using (MailMessage mm = new MailMessage())
-                        {
-                            mm.From = new MailAddress("cruxalphonse@gmail.com");
-                            mm.To.Add(email);
-                            mm.Subject = "Confirmation for Booking Panel";
-                            string body = "Hello,";
-                            body += "<br /><br />You have successfully booked Dexter's Lab Panel";
-                            body += "<br /> Booking Date: " + model.BookingDate;
-                            body += "<br /><br />Panel Booked: Panel " + startCounter + " to Panel " + countDev;
-                            body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
-                            body += "<br /><br />Regards, ";
-                            body += "<br />NTT Dexter Lab";
-                            mm.Body = body;
-                            mm.IsBodyHtml = true;
-
-                            using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                            {
-                                smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
-                                smtp.EnableSsl = true;
-                                smtp.Send(mm);
-                            }
-                        }
-                    }
-
-                }
-                else
-                {
-
-                    if (model.DeviceName == "Palo Alto")
-                    {
-
-                        elseDev = 1;
-                    }
-                    else
-                    {
-                        elseDev = 2;
-                    }
-
-                    //Check the panel
-                    int maxPanel = 30;
-                    int ds = elseDev;
-
-                    //While loop for ds != 0
-                    while (ds != 0)
-                    {
-                        if ((xCounter + (elseDev - 1)) > maxPanel)
-                        {
-                            TempData["Failure"] = "There are no sufficient space for booking any panel on this date.";
-                            return View("BookPhysicalDevice", model);
-                        }
-
-                        //Check if initial panel no is != to PanelStart or PanelEnd
-                        if ((!(db.Bookings.Where(x => x.BookingDate.Equals(model.BookingDate)).Any(x => x.PanelEnd.Equals(xCounter)))) && (!(db.Bookings.Where(x => x.BookingDate.Equals(model.BookingDate)).Any(x => x.PanelStart.Equals(xCounter)))))
+                        if (model.DeviceName == "Palo Alto")
                         {
 
-                            ds--;
+                            countDev = 1;
                         }
                         else
                         {
-                            ds = elseDev; //Reset to OG
-                            xCounter++; //Add one in Counter
-                                        //if xCounter has reach maxPanel, tempdata error that all panels are book for the or not space are not sufficient for booking
-
+                            countDev = 2;
                         }
 
-                        finalCounter = xCounter;
-                    }
+                        int startP;
+                        int endP;
+                        if (model.DeviceType == "Physical")
+                        {
+                            startP = startCounter;
+                            endP = countDev;
+                        }
+                        else
+                        {
+                            startP = 0;
+                            endP = 0;
+                        }
 
-                    int startP2;
-                    int endP2;
-                    if (model.DeviceType == "Physical")
-                    {
-                        startP2 = xCounter;
-                        endP2 = xCounter + (elseDev - 1);
-                    }
-                    else
-                    {
-                        startP2 = 0;
-                        endP2 = 0;
-                    }
-
-                    //Once device space reaches 0 and counter is equals to intial model.DeviceSpace
-                    if (ds == 0)
-                    {
-                        string email = User.Identity.Name;
-
-                        //Continue Booking for DTO
-                        BookingDTO booking2DTO = new BookingDTO()
+                        //Continue with the booking
+                        BookingDTO bookingDTO = new BookingDTO()
                         {
                             DeviceName = model.DeviceName,
                             DeviceSerialNo = model.DeviceSerialNo,
-                            DeviceSpace = elseDev,
+                            DeviceSpace = countDev,
                             DeviceType = model.DeviceType,
-                            BookingDate = model.BookingDate,
-                            PanelStart = startP2,
-                            PanelEnd = endP2,
+                            BookingDate = parseDate,
+                            BookingEndDate = parseDate,
+                            PanelStart = startP,
+                            PanelEnd = endP,
                             BookingPurpose = model.BookingPurpose,
                             ServerInstalled = false,
                             ModifiedBy = "",
@@ -219,31 +110,25 @@ namespace DexterLab.Controllers
                             IPAddress = "",
                             Username = "",
                             Password = ""
+
                         };
-                        db.Bookings.Add(booking2DTO);
+
+                        db.Bookings.Add(bookingDTO);
                         db.SaveChanges();
-                        //StartPanel = xCounter End Panel = xCounter plus devicespace
+
                         //Check if Identity is equals to the Email Address
 
                         if (db.Users.Where(a => a.EmailAddress == email).Any())
                         {
-                            int finalCount = xCounter + (elseDev - 1);
                             using (MailMessage mm = new MailMessage())
                             {
-                                mm.From = new MailAddress("cruxalphonse@gmail.com");
+                                mm.From = new MailAddress("no-reply@global.ntt");
                                 mm.To.Add(email);
                                 mm.Subject = "Confirmation for Booking Panel";
                                 string body = "Hello,";
                                 body += "<br /><br />You have successfully booked Dexter's Lab Panel";
-                                body += "<br /> Booking Date: " + model.BookingDate;
-                                if (xCounter == finalCount)
-                                {
-                                    body += "<br /><br />Panel Booked: Panel " + finalCount;
-                                }
-                                else
-                                {
-                                    body += "<br /><br />Panel Booked: Panel " + xCounter + " to Panel " + finalCount;
-                                }
+                                body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
+                                body += "<br /><br />Panel Booked: Panel " + startCounter + " to Panel " + countDev;
                                 body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
                                 body += "<br /><br />Regards, ";
                                 body += "<br />NTT Dexter Lab";
@@ -260,13 +145,136 @@ namespace DexterLab.Controllers
                         }
 
                     }
+                    else
+                    {
+                        int finalCounter = 0;
+                        int elseDev = 0;
+                        int xCounter = 1;
+
+                        if (model.DeviceName == "Palo Alto")
+                        {
+
+                            elseDev = 1;
+                        }
+                        else
+                        {
+                            elseDev = 2;
+                        }
+                        //Check the panel
+                        int maxPanel = 30;
+                        int ds = elseDev;
+
+                        //While loop for ds != 0
+                        while (ds != 0)
+                        {
+                            if ((xCounter + (elseDev - 1)) > maxPanel)
+                            {
+                                TempData["Failure"] = "There are no sufficient space for booking any panel on this date.";
+                                return View("BookPhysicalDevice", model);
+                            }
+
+                            //Check if initial panel no is != to PanelStart or PanelEnd
+                            if ((!(db.Bookings.Where(x => x.BookingDate.Equals(parseDate)).Any(x => x.PanelEnd.Equals(xCounter)))) && (!(db.Bookings.Where(x => x.BookingDate.Equals(parseDate)).Any(x => x.PanelStart.Equals(xCounter)))))
+                            {
+
+                                ds--;
+                            }
+                            else
+                            {
+                                ds = elseDev; //Reset to OG
+                                xCounter++; //Add one in Counter
+                                            //if xCounter has reach maxPanel, tempdata error that all panels are book for the or not space are not sufficient for booking
+
+                            }
+
+                            finalCounter = xCounter;
+                        }
+
+                        int startP2;
+                        int endP2;
+                        if (model.DeviceType == "Physical")
+                        {
+                            startP2 = xCounter;
+                            endP2 = xCounter + (elseDev - 1);
+                        }
+                        else
+                        {
+                            startP2 = 0;
+                            endP2 = 0;
+                        }
+
+                        //Once device space reaches 0 and counter is equals to intial model.DeviceSpace
+                        if (ds == 0)
+                        {
+                            string email = User.Identity.Name;
+
+                            //Continue Booking for DTO
+                            BookingDTO booking2DTO = new BookingDTO()
+                            {
+                                DeviceName = model.DeviceName,
+                                DeviceSerialNo = model.DeviceSerialNo,
+                                DeviceSpace = elseDev,
+                                DeviceType = model.DeviceType,
+                                BookingDate = parseDate,
+                                BookingEndDate = parseDate,
+                                PanelStart = startP2,
+                                PanelEnd = endP2,
+                                BookingPurpose = model.BookingPurpose,
+                                ServerInstalled = false,
+                                ModifiedBy = "",
+                                CreatedBy = email,
+                                IPAddress = "",
+                                Username = "",
+                                Password = ""
+                            };
+                            db.Bookings.Add(booking2DTO);
+                            db.SaveChanges();
+                            //StartPanel = xCounter End Panel = xCounter plus devicespace
+                            //Check if Identity is equals to the Email Address
+
+                            if (db.Users.Where(a => a.EmailAddress == email).Any())
+                            {
+                                int finalCount = xCounter + (elseDev - 1);
+                                using (MailMessage mm = new MailMessage())
+                                {
+                                    mm.From = new MailAddress("no-reply@global.ntt");
+                                    mm.To.Add(email);
+                                    mm.Subject = "Confirmation for Booking Panel";
+                                    string body = "Hello,";
+                                    body += "<br /><br />You have successfully booked Dexter's Lab Panel";
+                                    body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
+                                    if (xCounter == finalCount)
+                                    {
+                                        body += "<br /><br />Panel Booked: Panel " + finalCount;
+                                    }
+                                    else
+                                    {
+                                        body += "<br /><br />Panel Booked: Panel " + xCounter + " to Panel " + finalCount;
+                                    }
+                                    body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
+                                    body += "<br /><br />Regards, ";
+                                    body += "<br />NTT Dexter Lab";
+                                    mm.Body = body;
+                                    mm.IsBodyHtml = true;
+
+                                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                    {
+                                        smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
+                                        smtp.EnableSsl = true;
+                                        smtp.Send(mm);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                
                 }
             }
             //Create a tempdata message
             TempData["Success"] = "You have successfully booked the panel. Edit your booking with your credentials to remotely connect to server. Check your email for confirmation.";
 
             //Redirect
-            return Redirect("~/Booking/select-booking");
+            return RedirectToAction("Index", "Home");
         }
 
         //GET: /Booking/MyBooking
@@ -291,6 +299,7 @@ namespace DexterLab.Controllers
                     PanelStart = x.PanelStart,
                     PanelEnd = x.PanelEnd,
                     BookingDate = x.BookingDate,
+                    BookingEndDate = x.BookingEndDate,
                     BookingPurpose = x.BookingPurpose,
                     ServerInstalled = x.ServerInstalled,
                     ModifiedBy = x.ModifiedBy,
