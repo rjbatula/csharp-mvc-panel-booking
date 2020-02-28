@@ -14,6 +14,7 @@ namespace DexterLab.Models.Data
         public int Id { get; set; }
         public string DeviceName { get; set; }
         public string DeviceSerialNo { get; set; }
+        public string DeviceType { get; set; }
         public int DeviceSpace { get; set; }
         public DateTime BookingDate { get; set; }
         public int PanelStart { get; set; }

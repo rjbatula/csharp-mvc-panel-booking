@@ -16,35 +16,36 @@
         @TempData["Failure"]
     </div>
 }
+<h2 class="text-center block text-gray-700 font-bold mb-2">Log In</h2>
+<hr />
+<br />
+<div class="mx-auto w-full max-w-full sm:max-w-screen-xs  md:max-w-screen-xs lg:max-w-screen-md lg:mt-5">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-<h2>Login</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
+    <div class=" form-horizontal bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-full">
+        <br />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            <label class="control-label col-md-2">Email Address</label>
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="form-group mx-auto">
+            @*<label class="control-label block text-gray-700 text-lg font-bold mb-2">Email Address</label>*@
+            <div class="mb-6 mx-auto">
+                @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300", @placeholder = "Email Address" } })
                 @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger", @id = "loginEMail" })
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Password</label>
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+        <div class="form-group w-full max-w-full">
+            @*<label class="control-label block text-gray-700 text-lg font-bold mb-2">Password</label>*@
+            <div class="mb-6 mx-auto">
+                @Html.PasswordFor(model => model.Password, new { @class = "w-full max-w-full  shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:bg-white focus:shadow-outline focus:border-blue-300", @placeholder = "Password" })
                 @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger", @id = "loginPassword" })
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-12">
-                <label class="control-label">Remember Me</label>
+            <div class="flex ">
+                <label class="control-label block text-gray-700 text-md pr-3 mt-n2">Remember Me</label>
                 @Html.EditorFor(model => model.RememberMe, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger" })
             </div>
@@ -53,16 +54,20 @@
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-primary" id="loginSubmit" />
+            <div class="mx-auto">
+                <input type="submit" value="Login" class="btn btn-primary w-full max-w-full" id="loginSubmit" />
             </div>
         </div>
+
+        <a class="w-full max-w-full px-12 text-center text-decoration-none inline-block  font-bold text-sm text-blue-500" href="~/Account/create-account">Create an account</a>
+        <br />
+        <a class="w-full max-w-full px-12 text-center text-decoration-none inline-block  font-bold text-sm text-blue-500" href="~/Account/reset-password">Forgot Password</a>
     </div>
 
-    <a href="~/Account/create-account">Create an account</a>
-    <br />
-    <a href="~/Account/reset-password">Forgot Password</a>
-}
+        
+    }
+</div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

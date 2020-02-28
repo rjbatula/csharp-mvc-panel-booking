@@ -18,6 +18,7 @@ namespace DexterLab.Models.ViewModels
             Id = row.Id;
             DeviceName = row.DeviceName;
             DeviceSerialNo = row.DeviceSerialNo;
+            DeviceType = row.DeviceType;
             BookingDate = row.BookingDate;
             BookingPurpose = row.BookingPurpose;
 
@@ -28,6 +29,8 @@ namespace DexterLab.Models.ViewModels
         public string DeviceName { get; set; }
         [Required]
         public string DeviceSerialNo { get; set; }
+        [Required]
+        public string DeviceType { get; set; }
  
         [Required]
         [DataType(DataType.Date)]

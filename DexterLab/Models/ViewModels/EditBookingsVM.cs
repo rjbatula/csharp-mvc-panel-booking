@@ -19,6 +19,7 @@ namespace DexterLab.Models.ViewModels
             DeviceSerialNo = row.DeviceSerialNo;
             BookingPurpose = row.BookingPurpose;
             ServerInstalled = row.ServerInstalled;
+            DeviceType = row.DeviceType;
             IPAddress = row.IPAddress;
             Username = row.Username;
             Password = row.Password;
@@ -32,11 +33,9 @@ namespace DexterLab.Models.ViewModels
         public string BookingPurpose { get; set; }
         [Required]
         public bool ServerInstalled { get; set; }
-        [Required]
+        public string DeviceType { get; set; }
         public string IPAddress { get; set; }
-        [Required]
         public string Username { get; set; }
-
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }
 

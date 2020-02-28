@@ -58,6 +58,9 @@ namespace DexterLab.Controllers
                     TempData["Failure"] = "You cannot book a date that already passed.";
                     return View("BookPhysicalDevice", model);
                 }
+
+                //START with DATE COMPARISON HERE//
+
                 //Check if date is unique
                 if (!(db.Bookings.Any(x => x.BookingDate.Equals(model.BookingDate))))
                 {
@@ -73,6 +76,18 @@ namespace DexterLab.Controllers
                         countDev = 2;
                     }
 
+                    int startP;
+                    int endP;
+                    if(model.DeviceType == "Physical")
+                    {
+                        startP = startCounter;
+                        endP = countDev;
+                    }
+                    else
+                    {
+                        startP = 0;
+                        endP = 0;
+                    }
 
                     //Continue with the booking
                     BookingDTO bookingDTO = new BookingDTO()
@@ -80,9 +95,10 @@ namespace DexterLab.Controllers
                         DeviceName = model.DeviceName,
                         DeviceSerialNo = model.DeviceSerialNo,
                         DeviceSpace = countDev,
+                        DeviceType = model.DeviceType,
                         BookingDate = model.BookingDate,
-                        PanelStart = startCounter,
-                        PanelEnd = countDev,
+                        PanelStart = startP,
+                        PanelEnd = endP,
                         BookingPurpose = model.BookingPurpose,
                         ServerInstalled = false,
                         ModifiedBy = "",
@@ -168,6 +184,19 @@ namespace DexterLab.Controllers
                         finalCounter = xCounter;
                     }
 
+                    int startP2;
+                    int endP2;
+                    if (model.DeviceType == "Physical")
+                    {
+                        startP2 = xCounter;
+                        endP2 = xCounter + (elseDev - 1);
+                    }
+                    else
+                    {
+                        startP2 = 0;
+                        endP2 = 0;
+                    }
+
                     //Once device space reaches 0 and counter is equals to intial model.DeviceSpace
                     if (ds == 0)
                     {
@@ -179,9 +208,10 @@ namespace DexterLab.Controllers
                             DeviceName = model.DeviceName,
                             DeviceSerialNo = model.DeviceSerialNo,
                             DeviceSpace = elseDev,
+                            DeviceType = model.DeviceType,
                             BookingDate = model.BookingDate,
-                            PanelStart = xCounter,
-                            PanelEnd = xCounter + (elseDev - 1),
+                            PanelStart = startP2,
+                            PanelEnd = endP2,
                             BookingPurpose = model.BookingPurpose,
                             ServerInstalled = false,
                             ModifiedBy = "",
@@ -233,7 +263,7 @@ namespace DexterLab.Controllers
                 }
             }
             //Create a tempdata message
-            TempData["Success"] = "You have successfully booked the panel. Check your email for confirmation.";
+            TempData["Success"] = "You have successfully booked the panel. Edit your booking with your credentials to remotely connect to server. Check your email for confirmation.";
 
             //Redirect
             return Redirect("~/Booking/select-booking");
@@ -257,6 +287,7 @@ namespace DexterLab.Controllers
                     DeviceName = x.DeviceName,
                     DeviceSerialNo = x.DeviceSerialNo,
                     DeviceSpace = x.DeviceSpace,
+                    DeviceType = x.DeviceType,
                     PanelStart = x.PanelStart,
                     PanelEnd = x.PanelEnd,
                     BookingDate = x.BookingDate,
@@ -363,8 +394,15 @@ namespace DexterLab.Controllers
                     dto.BookingPurpose = model.BookingPurpose;
                     dto.ServerInstalled = model.ServerInstalled;
                     dto.ModifiedBy = email;
-                    dto.IPAddress = model.IPAddress;
-                    dto.Username = model.Username;
+                    if (!string.IsNullOrEmpty(model.IPAddress))
+                    {
+                        dto.IPAddress = model.IPAddress;
+                    }
+                    if (!string.IsNullOrEmpty(model.Username))
+                    {
+                        dto.Username = model.Username;
+                    }
+    
                     if (!string.IsNullOrEmpty(model.Password))
                     {
                         if (model.Password.Equals(model.ConfirmPassword))
@@ -420,7 +458,6 @@ namespace DexterLab.Controllers
         public ActionResult SpinVirtual(int id)
         {
             string ipAdd, userName, pass;
-
             using (Db db = new Db())
             {
                 BookingDTO dto = db.Bookings.Find(id);
@@ -477,7 +514,7 @@ namespace DexterLab.Controllers
             string command = "/C cd C:/temp/ & @echo off & redirect.bat & delete.bat";
                 System.Diagnostics.Process.Start("cmd.exe", command);
 
-            TempData["Success"] = "VM is spinning...";
+            TempData["Success"] = "Connecting remotely to Virtual Machine...";
             return RedirectToAction("my-bookings");
 
 
