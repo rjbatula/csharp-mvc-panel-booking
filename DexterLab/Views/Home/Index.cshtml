@@ -6,10 +6,10 @@
 
 @using (Html.BeginForm("Index", "Home", FormMethod.Get))
 {
-    <center>
-        <input id="StartDate" class="form-control col-md-6" type="date" name="startDate"/>
+    <center class="form-horizontal mx-auto w-full max-w-full sm:max-w-screen-xs  md:max-w-screen-xs lg:max-w-screen-md lg:mt-5 w-full max-w-full">
+        <input id="StartDate" class="w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" type="date" name="startDate"/>
         <br />
-        <input class="btn btn-primary btn-sm-lg form-control col-md-2 mt-n3" type="submit" name="submit" value="Search" />
+        <input class="btn btn-primary btn-sm-lg form-control w-full max-w-full mt-3" type="submit" name="submit" value="Search" />
     </center>
 
 }
@@ -17,7 +17,7 @@
 <br />
 @if (TempData["date"] != null)
     {
-        <h5 class="text-center font-weight-bold mt-n1">@TempData["date"]</h5>
+        <h5 class="text-center block text-gray-700 font-bold mb-2">@TempData["date"]</h5>
     }
 <center>
     @if (!(Model.Any()))
@@ -25,7 +25,7 @@
 
         for (int x = 1; x <= 10; x++)
         {
-            <div class="container border border-dark-50">
+            <div class="container border border-dark-50 invisible sm:invisible md:visible lg:visible xl:visible">
                 <div class="row">
                     <br />
                     <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
@@ -51,6 +51,19 @@
                 </div>
             </div>
         }
+
+        for (int x = 1; x <= 30; x++)
+        {
+            <div class="container border border-dark-50 visible sm:visible md:invisible lg:invisible xl:invisible">
+                <div class="row">
+                    <br />
+                    <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center">
+                        <b>Panel @x - Not Booked</b>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        }
     }
 
     else
@@ -58,11 +71,11 @@
         Dictionary<int, bool> data = new Dictionary<int, bool>();
         foreach (var item in Model)
         {
-            if (item.PanelStart.Equals(item.PanelEnd))
+            if (item.PanelStart.Equals(item.PanelEnd) && (!item.PanelStart.Equals(0)) && (!item.PanelEnd.Equals(0)))
             {
                 data.Add(item.PanelStart, item.ServerInstalled);
             }
-            else
+            else if ((!item.PanelStart.Equals(item.PanelEnd)) && (!item.PanelStart.Equals(0)) && (!item.PanelEnd.Equals(0)))
             {
                 data.Add(item.PanelStart, item.ServerInstalled);
                 data.Add(item.PanelEnd, item.ServerInstalled);
@@ -71,7 +84,7 @@
 
         for (int x = 1; x <= 10; x++)
         {
-            <div class="container border border-dark-50 ">
+            <div class="container border border-dark-50 hidden sm:hidden md:block lg:block xl:block">
                 <div class="row">
                     @if (data.ContainsKey(x) && data[x].Equals(true))
                     {
@@ -155,6 +168,39 @@
                         </div>
                         <br />
 
+                    }
+                </div>
+            </div>
+
+        }
+
+        for (int x = 1; x <= 30; x++)
+        {
+            <div class="container border border-dark-50 block sm:block md:hidden lg:hidden xl:hidden">
+                <div class="row">
+                    @if (data.ContainsKey(x) && data[x].Equals(true))
+                    {
+                        <br />
+                        <div class=" card card-columns col-sm col-md text-center bg-success border border-success-50 justify-content-center py-2">
+                            <b class="text-white">Panel @x - Booked [Server Installed]</b>
+                        </div>
+                        <br />
+                    }
+                    else if (data.ContainsKey(x) && data[x].Equals(false))
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-warning border border-warning-50 justify-content-center py-2">
+                            <b class="text-white">Panel @x - Booked [Server Not Installed]</b>
+                        </div>
+                        <br />
+                    }
+                    else
+                    {
+                        <br />
+                        <div class="card card-columns col-sm col-md text-center bg-light border border-dark-50 justify-content-center py-2">
+                            <b>Panel @x - Not Booked</b>
+                        </div>
+                        <br />
                     }
                 </div>
             </div>

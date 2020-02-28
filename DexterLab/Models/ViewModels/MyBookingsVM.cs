@@ -32,6 +32,7 @@ namespace DexterLab.Models.ViewModels
             IPAddress = row.IPAddress;
             Username = row.Username;
             Password = row.Password;
+            DeviceType = row.DeviceType;
         }
 
         public MyBookingsVM(BookingDTO dto)
@@ -69,5 +70,7 @@ namespace DexterLab.Models.ViewModels
         [Required]
         public string Password { get; set; }
 
+        [Required]
+        public string DeviceType { get; set; }
     }
 }

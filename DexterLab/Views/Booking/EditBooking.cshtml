@@ -17,83 +17,86 @@
     </div>
 }
 
-<h2>EditBooking</h2>
-
+<h2 class="text-center block text-gray-700 font-bold mb-2">Edit Your Booking</h2>
+<hr />
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    
+<div class="form-horizontal mx-auto w-full max-w-full sm:max-w-screen-xs  md:max-w-screen-xs lg:max-w-screen-md lg:mt-5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-full">
 
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.DeviceSerialNo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DeviceSerialNo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DeviceSerialNo, "", new { @class = "text-danger" })
-            </div>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+    <h4 class="text-center block text-gray-700 font-bold mb-2">Booking Information</h4>
+    <hr />
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> Device Serial No</label>
+        <div class="mb-6 mx-auto">
+            @Html.EditorFor(model => model.DeviceSerialNo, new { htmlAttributes = new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" } })
+            @Html.ValidationMessageFor(model => model.DeviceSerialNo, "", new { @class = "text-danger" })
         </div>
+    </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookingPurpose, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BookingPurpose, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.BookingPurpose, "", new { @class = "text-danger" })
-            </div>
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> Booking Purpose</label>
+        <div class="mb-6 mx-auto">
+            @Html.EditorFor(model => model.BookingPurpose, new { htmlAttributes = new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" } })
+            @Html.ValidationMessageFor(model => model.BookingPurpose, "", new { @class = "text-danger" })
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ServerInstalled, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.DropDownListFor(model => model.ServerInstalled, new List<SelectListItem>
-                {
-                   new SelectListItem { Text = "Yes", Value = "True", Selected=true},
-                   new SelectListItem { Text = "No", Value = "False"}
-                }, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.ServerInstalled, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.IPAddress, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.IPAddress, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IPAddress, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> Server Installed</label>
+        <div class="mb-6 mx-auto">
+            <div class="checkbox">
+                @Html.DropDownListFor(model => model.ServerInstalled, new List<SelectListItem>
+            {
+               new SelectListItem { Text = "Yes", Value = "True", Selected=true},
+               new SelectListItem { Text = "No", Value = "False"}
+            }, new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" })
+                @Html.ValidationMessageFor(model => model.ServerInstalled, "", new { @class = "text-danger" })
             </div>
         </div>
     </div>
+
+    <br />
+    <h4 class="text-center block text-gray-700 font-bold mb-2 mt-n3">RDC Account Information</h4>
+    <hr />
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> IP Address</label>
+        <div class="mb-6 mx-auto">
+            @Html.EditorFor(model => model.IPAddress, new { htmlAttributes = new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300", @placeholder = "xxx.xxx.xxx.xxx" } })
+            @Html.ValidationMessageFor(model => model.IPAddress, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> Domain Username</label>
+        <div class="mb-6 mx-auto">
+            @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300", @placeholder = @"<domain>\<username>" } })
+            @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> Password</label>
+        <div class="mb-6 mx-auto">
+            @Html.PasswordFor(model => model.Password, new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" })
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2"> Confirm Password</label>
+        <div class="mb-6 mx-auto">
+            @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" })
+            @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="mx-auto">
+            <input type="submit" value="Save Booking" class="btn btn-primary w-full max-w-full" />
+        </div>
+    </div>
+</div>
 }
