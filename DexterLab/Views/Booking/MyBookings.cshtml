@@ -42,7 +42,10 @@ else
             Device Type
         </th>
         <th class="p-3 text-center">
-            Date
+            Start Date
+        </th>
+        <th class="p-3 text-center">
+            End Date
         </th>
         <th class="p-3 text-center">
             Allocated Panel
@@ -71,7 +74,10 @@ else
                 Device Type
             </th>
             <th class="p-3 text-center">
-                Date
+                Start Date
+            </th>
+            <th class="p-3 text-center">
+                End Date
             </th>
             <th class="p-3 text-center">
                 Allocated Panel
@@ -96,71 +102,74 @@ else
             var no = "No";
             var nil = "NIL";
 
-            <tr class="flex flex-col flex-no wrap mb-2 sm:flex sm:flex-col sm:flex-no wrap sm:mb-2 sm:border sm:border-blue-700 hover:bg-orange-100 md:table-row md:mb-0 ">
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Device: </span>@Html.DisplayFor(modelItem => item.DeviceName)
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Serial No: </span>@Html.DisplayFor(modelItem => item.DeviceSerialNo)
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Device Type: </span>@Html.DisplayFor(modelItem => item.DeviceType)
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Booking Date: </span>@Html.DisplayFor(modelItem => item.BookingDate)
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    @if (item.PanelStart.Equals(item.PanelEnd))
-                    {
+        <tr class="flex flex-col flex-no wrap mb-2 sm:flex sm:flex-col sm:flex-no wrap sm:mb-2 sm:border sm:border-blue-700 hover:bg-orange-100 md:table-row md:mb-0 ">
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Device: </span>@Html.DisplayFor(modelItem => item.DeviceName)
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Serial No: </span>@Html.DisplayFor(modelItem => item.DeviceSerialNo)
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Device Type: </span>@Html.DisplayFor(modelItem => item.DeviceType)
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Start Date: </span>@Html.DisplayFor(modelItem => item.BookingDate)
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">End Date: </span>@Html.DisplayFor(modelItem => item.BookingEndDate)
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                @if (item.PanelStart.Equals(item.PanelEnd))
+                {
                     <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Panel Booked: </span>@Html.DisplayFor(modelItem => item.PanelStart)
+                }
+                else
+                {
+                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Panel Booked: </span>@panel
+                }
+
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Booking Purpose: </span>@Html.DisplayFor(modelItem => item.BookingPurpose)
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
+                @if (item.DeviceType.Equals("Virtual"))
+                {
+                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Server Installed: </span>@nil
+                }
+                else
+                {
+                    if (item.ServerInstalled.Equals(false))
+                    {
+                        <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Server Installed: </span>@no
                     }
                     else
                     {
-                <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Panel Booked: </span>@panel
+                        <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Server Installed: </span>@yes
                     }
+                }
 
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Booking Purpose: </span>@Html.DisplayFor(modelItem => item.BookingPurpose)
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center md:text-center lg:text-center xl:text-center">
-                    @if (item.DeviceType.Equals("Virtual"))
+            </td>
+            <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center">
+                <a class="btn btn-primary block sm:block" href="~/Booking/edit-booking/@item.Id">Edit</a>
+                <a class="btn btn-danger block sm:block" href="~/Booking/delete-booking/@item.Id" onclick="return confirm('Are you sure you want to delete this item?')" ;>Delete</a>
+                @if (item.DeviceType.Equals("Virtual"))
+                {
+                    if (item.BookingDate.Equals(DateTime.Today.Date) && (!String.IsNullOrEmpty(item.IPAddress)) && (!String.IsNullOrEmpty(item.Username)) && (!String.IsNullOrEmpty(item.Password)))
                     {
-                        <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Server Installed: </span>@nil
+                        <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
                     }
-                    else
+                }
+                else
+                {
+                    if (item.ServerInstalled.Equals(true) && item.BookingDate.Equals(DateTime.Today.Date) && (!String.IsNullOrEmpty(item.IPAddress)) && (!String.IsNullOrEmpty(item.Username)) && (!String.IsNullOrEmpty(item.Password)))
                     {
-                        if (item.ServerInstalled.Equals(false))
-                        {
-                            <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Server Installed: </span>@no
-                        }
-                        else
-                        {
-                            <span class="hidden sm:block md:hidden lg:hidden xl:hidden font-bold">Server Installed: </span>@yes
-                        }
+                        <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
                     }
+                }
 
-                </td>
-                <td class="border-grey-light border hover:bg-gray-100 p-3 sm:text-center">
-                    <a class="btn btn-primary block sm:block" href="~/Booking/edit-booking/@item.Id">Edit</a>
-                    <a class="btn btn-danger block sm:block" href="~/Booking/delete-booking/@item.Id" onclick="return confirm('Are you sure you want to delete this item?')" ;>Delete</a>
-                    @if (item.DeviceType.Equals("Virtual"))
-                    {
-                        if (item.BookingDate.Equals(DateTime.Today.Date) && (!String.IsNullOrEmpty(item.IPAddress)) && (!String.IsNullOrEmpty(item.Username)) && (!String.IsNullOrEmpty(item.Password)))
-                        {
-                            <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
-                        }
-                    }
-                    else
-                    {
-                        if (item.ServerInstalled.Equals(true) && item.BookingDate.Equals(DateTime.Today.Date) && (!String.IsNullOrEmpty(item.IPAddress)) && (!String.IsNullOrEmpty(item.Username)) && (!String.IsNullOrEmpty(item.Password)))
-                        {
-                            <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
-                        }
-                    }
-
-                </td>
-            </tr>
+            </td>
+        </tr>
 
         }
 

@@ -4,10 +4,23 @@
     ViewBag.Title = "Home Page";
 }
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Failure"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Failure"]
+    </div>
+}
+
 @using (Html.BeginForm("Index", "Home", FormMethod.Get))
 {
     <center class="form-horizontal mx-auto w-full max-w-full sm:max-w-screen-xs  md:max-w-screen-xs lg:max-w-screen-md lg:mt-5 w-full max-w-full">
-        <input id="StartDate" class="w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" type="date" name="startDate"/>
+        <input id="StartDate" class="w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" type="date" name="startDate" />
         <br />
         <input class="btn btn-primary btn-sm-lg form-control w-full max-w-full mt-3" type="submit" name="submit" value="Search" />
     </center>
@@ -16,9 +29,9 @@
 
 <br />
 @if (TempData["date"] != null)
-    {
-        <h5 class="text-center block text-gray-700 font-bold mb-2">@TempData["date"]</h5>
-    }
+{
+    <h5 class="text-center block text-gray-700 font-bold mb-2">@TempData["date"]</h5>
+}
 <center>
     @if (!(Model.Any()))
     {
