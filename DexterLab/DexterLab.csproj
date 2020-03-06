@@ -316,6 +316,7 @@
     <Content Include="Views\Booking\MyBookings.cshtml" />
     <Content Include="Views\Booking\EditBooking.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Booking\BookingSuccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

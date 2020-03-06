@@ -1,0 +1,27 @@
+﻿<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet" />
+@{
+    ViewBag.Title = "Booking Success";
+}
+
+<h2 class="text-center block text-gray-700 font-bold mb-2"><i class="fas fa-check-circle text-success"></i><span class="text-success"> Booking Successful</span></h2>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success text-center block text-gray-700 font-bold">
+        @TempData["Success"]
+        @*You have successfully booked your panel. The information of the booking are below:
+        <br />
+        Booking Date: xx-xx-xx
+        Panel: 1 to 2
+        <br />
+        Check your email for your booking confirmation*@
+    </div>
+}
+@*else
+{
+    <meta http-equiv="refresh" content="0; url=https://localhost:44383/" />
+    
+}*@
+
+

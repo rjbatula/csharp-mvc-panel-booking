@@ -92,57 +92,132 @@ namespace DexterLab.Controllers
                             endP = 0;
                         }
 
-                        //Continue with the booking
-                        BookingDTO bookingDTO = new BookingDTO()
+                        
+                        //If Physical Device is chosen
+                        if (model.DeviceType.Equals("Physical"))
                         {
-                            DeviceName = model.DeviceName,
-                            DeviceSerialNo = model.DeviceSerialNo,
-                            DeviceSpace = countDev,
-                            DeviceType = model.DeviceType,
-                            BookingDate = parseDate,
-                            BookingEndDate = parseDate,
-                            PanelStart = startP,
-                            PanelEnd = endP,
-                            BookingPurpose = model.BookingPurpose,
-                            ServerInstalled = false,
-                            ModifiedBy = "",
-                            CreatedBy = email,
-                            IPAddress = "",
-                            Username = "",
-                            Password = ""
-
-                        };
-
-                        db.Bookings.Add(bookingDTO);
-                        db.SaveChanges();
-
-                        //Check if Identity is equals to the Email Address
-
-                        if (db.Users.Where(a => a.EmailAddress == email).Any())
-                        {
-                            using (MailMessage mm = new MailMessage())
+                            //Continue with the booking
+                            BookingDTO bookingDTO = new BookingDTO()
                             {
-                                mm.From = new MailAddress("no-reply@global.ntt");
-                                mm.To.Add(email);
-                                mm.Subject = "Confirmation for Booking Panel";
-                                string body = "Hello,";
-                                body += "<br /><br />You have successfully booked Dexter's Lab Panel";
-                                body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
-                                body += "<br /><br />Panel Booked: Panel " + startCounter + " to Panel " + countDev;
-                                body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
-                                body += "<br /><br />Regards, ";
-                                body += "<br />NTT Dexter Lab";
-                                mm.Body = body;
-                                mm.IsBodyHtml = true;
+                                DeviceName = model.DeviceName,
+                                DeviceSerialNo = model.DeviceSerialNo,
+                                DeviceSpace = countDev,
+                                DeviceType = model.DeviceType,
+                                BookingDate = parseDate,
+                                BookingEndDate = parseDate,
+                                PanelStart = startP,
+                                PanelEnd = endP,
+                                BookingPurpose = model.BookingPurpose,
+                                ServerInstalled = false,
+                                ModifiedBy = "",
+                                CreatedBy = email,
+                                IPAddress = "",
+                                Username = "",
+                                Password = ""
 
-                                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                            };
+
+                            db.Bookings.Add(bookingDTO);
+                            db.SaveChanges();
+
+                            //Physical
+                            //Check if Identity is equals to the Email Address
+
+                            if (db.Users.Where(a => a.EmailAddress == email).Any())
+                            {
+                                using (MailMessage mm = new MailMessage())
                                 {
-                                    smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
-                                    smtp.EnableSsl = true;
-                                    smtp.Send(mm);
+                                    mm.From = new MailAddress("no-reply@global.ntt");
+                                    mm.To.Add(email);
+                                    mm.Subject = "Confirmation for Booking Panel - Physical Device";
+                                    string body = "Hello,";
+                                    body += "<br /><br />You have successfully booked Dexter's Lab Panel";
+                                    body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
+                                    body += "<br /><br />Panel Booked: Panel " + startCounter + " to Panel " + countDev;
+                                    body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
+                                    body += "<br /><br />Regards, ";
+                                    body += "<br />NTT Dexter Lab";
+                                    mm.Body = body;
+                                    mm.IsBodyHtml = true;
+
+                                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                    {
+                                        smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
+                                        smtp.EnableSsl = true;
+                                        smtp.Send(mm);
+                                    }
+
+                                    //Create a tempdata message
+                                    TempData["Success"] = MvcHtmlString.Create("You have successfully booked your physical device in our panel." + "<br /><br />" + "Edit your booking with your credentials to remotely connect to server. Please check your email for confirmation.");
                                 }
                             }
                         }
+                        else
+                        {
+                            //Continue with the booking
+                            BookingDTO bookingDTO = new BookingDTO()
+                            {
+                                DeviceName = model.DeviceName,
+                                DeviceSerialNo = model.DeviceSerialNo,
+                                DeviceSpace = countDev,
+                                DeviceType = model.DeviceType,
+                                BookingDate = parseDate,
+                                BookingEndDate = parseDate,
+                                PanelStart = startP,
+                                PanelEnd = endP,
+                                BookingPurpose = model.BookingPurpose,
+                                ServerInstalled = false,
+                                ModifiedBy = "",
+                                CreatedBy = email,
+                                IPAddress = "40.122.27.77",
+                                Username = "fwadmin",
+                                Password = "cisco"
+
+                            };
+
+                            db.Bookings.Add(bookingDTO);
+                            db.SaveChanges();
+
+                            //Virtualize
+                            //Check if Identity is equals to the Email Address
+
+                            if (db.Users.Where(a => a.EmailAddress == email).Any())
+                            {
+                                using (MailMessage mm = new MailMessage())
+                                {
+                                    mm.From = new MailAddress("no-reply@global.ntt");
+                                    mm.To.Add(email);
+                                    mm.Subject = "Confirmation for Booking Panel - Virtualize Device";
+                                    string body = "Hello,";
+                                    body += "<br /><br />You have successfully booked Dexter's Lab Panel";
+                                    body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
+                                    body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
+                                    body += "<br /><br />You can now go to 'My Bookings' and click the 'Connect via SSH' button to automatically connect";
+                                    body += "<br /><br />If you decided to connect through your own, these are the credentials valid only until the end of your booking date:";
+                                    body += "<br /><br />IP Address: 40.122.27.77";
+                                    body += "<br /><br />Username: fwadmin";
+                                    body += "<br /><br />Password: cisco";
+                                    body += "<br /><br />Regards, ";
+                                    body += "<br />NTT Dexter Lab";
+                                    mm.Body = body;
+                                    mm.IsBodyHtml = true;
+
+                                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                    {
+                                        smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
+                                        smtp.EnableSsl = true;
+                                        smtp.Send(mm);
+                                    }
+                                    
+                                    TempData["Success"] = MvcHtmlString.Create("You have successfully booked your virtual device in our panel.<br /><br /> Connect via SSH using the button at 'MyBookings'. <br /><br />" +
+                                        "If you wish to connect on your own SSH device, here is the IP Address: <br /><br /> " +
+                                        "40.122.27.77 <br /><br />" +
+                                        "Check your email address to get the credentials provided by Dexter's Lab");
+
+                                }
+                            }
+                        }
+                        
 
                     }
                     else
@@ -208,73 +283,141 @@ namespace DexterLab.Controllers
                         {
                             string email = User.Identity.Name;
 
-                            //Continue Booking for DTO
-                            BookingDTO booking2DTO = new BookingDTO()
+                            if (model.DeviceType.Equals("Physical"))
                             {
-                                DeviceName = model.DeviceName,
-                                DeviceSerialNo = model.DeviceSerialNo,
-                                DeviceSpace = elseDev,
-                                DeviceType = model.DeviceType,
-                                BookingDate = parseDate,
-                                BookingEndDate = parseDate,
-                                PanelStart = startP2,
-                                PanelEnd = endP2,
-                                BookingPurpose = model.BookingPurpose,
-                                ServerInstalled = false,
-                                ModifiedBy = "",
-                                CreatedBy = email,
-                                IPAddress = "",
-                                Username = "",
-                                Password = ""
-                            };
-                            db.Bookings.Add(booking2DTO);
-                            db.SaveChanges();
-                            //StartPanel = xCounter End Panel = xCounter plus devicespace
-                            //Check if Identity is equals to the Email Address
-
-                            if (db.Users.Where(a => a.EmailAddress == email).Any())
-                            {
-                                int finalCount = xCounter + (elseDev - 1);
-                                using (MailMessage mm = new MailMessage())
+                                //Continue Booking for DTO
+                                BookingDTO booking2DTO = new BookingDTO()
                                 {
-                                    mm.From = new MailAddress("no-reply@global.ntt");
-                                    mm.To.Add(email);
-                                    mm.Subject = "Confirmation for Booking Panel";
-                                    string body = "Hello,";
-                                    body += "<br /><br />You have successfully booked Dexter's Lab Panel";
-                                    body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
-                                    if (xCounter == finalCount)
-                                    {
-                                        body += "<br /><br />Panel Booked: Panel " + finalCount;
-                                    }
-                                    else
-                                    {
-                                        body += "<br /><br />Panel Booked: Panel " + xCounter + " to Panel " + finalCount;
-                                    }
-                                    body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
-                                    body += "<br /><br />Regards, ";
-                                    body += "<br />NTT Dexter Lab";
-                                    mm.Body = body;
-                                    mm.IsBodyHtml = true;
+                                    DeviceName = model.DeviceName,
+                                    DeviceSerialNo = model.DeviceSerialNo,
+                                    DeviceSpace = elseDev,
+                                    DeviceType = model.DeviceType,
+                                    BookingDate = parseDate,
+                                    BookingEndDate = parseDate,
+                                    PanelStart = startP2,
+                                    PanelEnd = endP2,
+                                    BookingPurpose = model.BookingPurpose,
+                                    ServerInstalled = false,
+                                    ModifiedBy = "",
+                                    CreatedBy = email,
+                                    IPAddress = "",
+                                    Username = "",
+                                    Password = ""
+                                };
+                                db.Bookings.Add(booking2DTO);
+                                db.SaveChanges();
+                                //StartPanel = xCounter End Panel = xCounter plus devicespace
+                                //Check if Identity is equals to the Email Address
 
-                                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                if (db.Users.Where(a => a.EmailAddress == email).Any())
+                                {
+                                    int finalCount = xCounter + (elseDev - 1);
+                                    using (MailMessage mm = new MailMessage())
                                     {
-                                        smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
-                                        smtp.EnableSsl = true;
-                                        smtp.Send(mm);
+                                        mm.From = new MailAddress("no-reply@global.ntt");
+                                        mm.To.Add(email);
+                                        mm.Subject = "Confirmation for Booking Panel";
+                                        string body = "Hello,";
+                                        body += "<br /><br />You have successfully booked Dexter's Lab Panel";
+                                        body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
+                                        if (xCounter == finalCount)
+                                        {
+                                            body += "<br /><br />Panel Booked: Panel " + finalCount;
+                                        }
+                                        else
+                                        {
+                                            body += "<br /><br />Panel Booked: Panel " + xCounter + " to Panel " + finalCount;
+                                        }
+                                        body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
+                                        body += "<br /><br />Regards, ";
+                                        body += "<br />NTT Dexter Lab";
+                                        mm.Body = body;
+                                        mm.IsBodyHtml = true;
+
+                                        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                        {
+                                            smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
+                                            smtp.EnableSsl = true;
+                                            smtp.Send(mm);
+                                        }
+
+                                        //Create a tempdata message
+                                        TempData["Success"] = MvcHtmlString.Create("You have successfully booked your physical device in our panel." + "<br /><br />" + "Edit your booking with your credentials to remotely connect to server. Please check your email for confirmation.");
                                     }
                                 }
                             }
+                            else
+                            {
+                                //Continue Booking for DTO
+                                BookingDTO booking2DTO = new BookingDTO()
+                                {
+                                    DeviceName = model.DeviceName,
+                                    DeviceSerialNo = model.DeviceSerialNo,
+                                    DeviceSpace = elseDev,
+                                    DeviceType = model.DeviceType,
+                                    BookingDate = parseDate,
+                                    BookingEndDate = parseDate,
+                                    PanelStart = startP2,
+                                    PanelEnd = endP2,
+                                    BookingPurpose = model.BookingPurpose,
+                                    ServerInstalled = false,
+                                    ModifiedBy = "",
+                                    CreatedBy = email,
+                                    IPAddress = "40.122.27.77",
+                                    Username = "fwadmin",
+                                    Password = "cisco"
+                                };
+                                db.Bookings.Add(booking2DTO);
+                                db.SaveChanges();
+                                //StartPanel = xCounter End Panel = xCounter plus devicespace
+                                //Check if Identity is equals to the Email Address
+
+                                if (db.Users.Where(a => a.EmailAddress == email).Any())
+                                {
+                                    int finalCount = xCounter + (elseDev - 1);
+                                    using (MailMessage mm = new MailMessage())
+                                    {
+                                        mm.From = new MailAddress("no-reply@global.ntt");
+                                        mm.To.Add(email);
+                                        mm.Subject = "Confirmation for Booking Panel - Virtualize Device";
+                                        string body = "Hello,";
+                                        body += "<br /><br />You have successfully booked Dexter's Lab Panel";
+                                        body += "<br /> Booking Date: " + model.BookingDate + " to " + model.BookingEndDate;
+                                        body += "<br /><br />Purpose of Booking: " + model.BookingPurpose;
+                                        body += "<br /><br />You can now go to 'My Bookings' and click the 'Connect via SSH' button to automatically connect";
+                                        body += "<br /><br />If you decided to connect through your own, these are the credentials valid only until the end of your booking date:";
+                                        body += "<br /><br />IP Address: 40.122.27.77";
+                                        body += "<br /><br />Username: fwadmin";
+                                        body += "<br /><br />Password: cisco";
+                                        body += "<br /><br />Regards, ";
+                                        body += "<br />NTT Dexter Lab";
+                                        mm.Body = body;
+                                        mm.IsBodyHtml = true;
+
+                                        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                                        {
+                                            smtp.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["Username"], ConfigurationManager.AppSettings["Password"]);
+                                            smtp.EnableSsl = true;
+                                            smtp.Send(mm);
+                                        }
+
+                                        //Create a tempdata message
+                                        TempData["Success"] = MvcHtmlString.Create("You have successfully booked your virtual device in our panel.<br /><br /> Connect via SSH using the button at 'MyBookings'. <br /><br />" +
+                                        "If you wish to connect on your own SSH device, here is the IP Address: <br /><br /> " +
+                                        "40.122.27.77 <br /><br />" +
+                                        "Check your email address to get the credentials provided by Dexter's Lab");
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                 
                 }
             }
-            //Create a tempdata message
-            TempData["Success"] = "You have successfully booked the panel. Edit your booking with your credentials to remotely connect to server. Check your email for confirmation.";
 
             //Redirect
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("booking-success", "Booking");
         }
 
         //GET: /Booking/MyBooking
@@ -528,7 +671,41 @@ namespace DexterLab.Controllers
 
 
         }
-            
+
+        //GET: /Booking/SpinSSH/id
+        [ActionName("spin-SSH")]
+        [HttpGet]
+        public ActionResult SpinSSH(int id)
+        {
+            string ipAdd, userName, pass;
+            using (Db db = new Db())
+            {
+                BookingDTO dto = db.Bookings.Find(id);
+                ipAdd = dto.IPAddress;
+                userName = dto.Username;
+                pass = dto.Password;
+            }
+
+            string com = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PuTTY (64-bit)";
+            string com2 = @"putty.exe -ssh "+userName+"@"+ipAdd+" -pw " +pass;
+            string command = "/C cd " + com + " & @echo off & " + com2;
+            System.Diagnostics.Process.Start("cmd.exe", command);
+
+            TempData["Success"] = "Connecting virtually via SSH...";
+            return RedirectToAction("my-bookings");
         }
+
+        //-------------------------------------Static Success/Failure Page--------------------------------
+
+        //GET: /Booking/BookingSuccess
+        [ActionName("booking-success")]
+        public ActionResult BookingSuccess()
+        {
+            return View("BookingSuccess");
+        }
+
+    }
+
+   
     
 }

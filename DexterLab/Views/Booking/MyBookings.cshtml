@@ -157,14 +157,14 @@ else
                 {
                     if (item.BookingDate.Equals(DateTime.Today.Date) && (!String.IsNullOrEmpty(item.IPAddress)) && (!String.IsNullOrEmpty(item.Username)) && (!String.IsNullOrEmpty(item.Password)))
                     {
-                        <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
+                        <a class="btn btn-info block sm:block" href="~/Booking/spin-SSH/@item.Id">Connect via SSH</a>
                     }
                 }
                 else
                 {
                     if (item.ServerInstalled.Equals(true) && item.BookingDate.Equals(DateTime.Today.Date) && (!String.IsNullOrEmpty(item.IPAddress)) && (!String.IsNullOrEmpty(item.Username)) && (!String.IsNullOrEmpty(item.Password)))
                     {
-                        <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect RDC</a>
+                        <a class="btn btn-info block sm:block" href="~/Booking/spin-virtual/@item.Id">Connect via RDC</a>
                     }
                 }
 
