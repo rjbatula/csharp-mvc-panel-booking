@@ -4,9 +4,6 @@
 <h2 align="center">Panel Booking System</h2>
 
 
-Update your progress over here:
-
-
 <h3>Coding Workflow</h3>
 
 <hr>
@@ -37,6 +34,8 @@ Update your progress over here:
 |DL-12| Button to Start Remote Desktop Connection  | Joshua | 18 Feb 2020 |Done|
 |DL-13| Dynamic Credentials for RDC  | Joshua | 21 Feb 2020 |Done|
 |DL-14| Responsive UI for App  | Joshua | 28 Feb 2020 |Done|
+|DL-15| Button to Start SSH Connection  | Joshua | 4 Mar 2020 |Done|
+|DL-16| Dyanamic Credentials for SSH  | Joshua | 6 Mar 2020 |Done|
 
 <h3>Assumptions</h3>
 
@@ -49,7 +48,34 @@ Update your progress over here:
 
 <hr>
 
-| S/No. | Device Name |  Virtiualisable? | Spaces Need in Web App |
+| S/No. | Device Name |  Virtualisable? | Spaces Need in Web App |
 |---|---|---|---|
 | 1 |  Palo Alto Firewall |  Yes| 1|
 | 2 |  ChecPoint Firewall |  Yes| 2|
+
+<h3>Use Cases</h3>
+
+<hr>
+
+<h4>Login System</h4>
+
+1. Users are able to create an account
+2. Users are unable to login while their account is unactivated
+3. Users are able to activate their account via email
+4. Users are able to reset their password via email
+5. Users are able to login and logout
+6. Users are able to update their profile and password
+
+<h4>Booking System</h4>
+
+1. Users are able to see which panels were booked and not booked
+2. Users are able to book their own panels as physical device and virtualised device
+3. Users are able to edit their booking
+4. Users are able to delete their booking
+
+
+<h4>Remote Desktop Connection | SSH Connection</h4>
+
+ 1. Users are able to input their RDC credentials consisting of their IP, Domain, Username and Password at the Edit Booking page
+ 2. Users are able to see a RDC button once they have entered their credentials, changed server installed to "yes" for physical device and it is their booking date.
+ 3. Users are able to remote connect to their Virtual Machine once the button is pressed
