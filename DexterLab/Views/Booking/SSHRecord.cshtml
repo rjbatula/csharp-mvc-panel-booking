@@ -1,0 +1,64 @@
+﻿@model IEnumerable<DexterLab.Models.ViewModels.SSHRecordsVM>
+
+@{
+    ViewBag.Title = "SSHRecord";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Failure"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Failure"]
+    </div>
+}
+
+<h2 class="text-center block text-gray-700 font-bold mb-2">SSH Records</h2>
+<hr />
+@if (!(Model.Any()))
+{
+    <div class="col-md-12 text-center">
+        <br />
+        <h3 class="text-center block text-gray-700 font-bold mb-2">You currently have no records</h3>
+    </div>
+
+}
+else
+{
+    <p>
+        <a class="btn btn-primary block " href="~/Booking/create-ssh">Create</a>
+    </p>
+    <table class="w-full  bg-white rounded-lg overflow-hidden md:shadow-lg my-5 mx-auto">
+        <tr class="text-white bg-blue-700 table-row rounded-none mb-0 ">
+            <th class="p-3 text-center">
+                Username
+            </th>
+            <th class="p-3 text-center">
+                Password
+            </th>
+            <th class="p-3 text-center"></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr class="hover:bg-orange-100 table-row mb-0 ">
+                <td class="border-grey-light border hover:bg-gray-100 p-3 text-center">
+                    @Html.DisplayFor(modelItem => item.SSHUser)
+                </td>
+                <td class="border-grey-light border hover:bg-gray-100 p-3 text-center">
+                    ********
+                </td>
+                <td class="border-grey-light border hover:bg-gray-100 p-3 text-center">
+                    <a class="btn btn-primary block sm:block" href="~/Booking/edit-ssh/@item.Id">Edit</a>
+                    <a class="btn btn-danger block sm:block" href="~/Booking/delete-ssh/@item.Id" ;>Delete</a>
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+

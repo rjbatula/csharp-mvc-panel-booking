@@ -36,6 +36,8 @@
 |DL-14| Responsive UI for App  | Joshua | 28 Feb 2020 |Done|
 |DL-15| Button to Start SSH Connection  | Joshua | 4 Mar 2020 |Done|
 |DL-16| Dyanamic Credentials for SSH  | Joshua | 6 Mar 2020 |Done|
+|DL-17| CRUD SSH for Admin  | Joshua | 9 Mar 2020 |Done|
+
 
 <h3>Assumptions</h3>
 
