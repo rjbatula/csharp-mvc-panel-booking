@@ -695,6 +695,370 @@ namespace DexterLab.Controllers
             return RedirectToAction("my-bookings");
         }
 
+        //GET: /Booking/SSHRecord
+        [ActionName("ssh-record")]
+        public ActionResult SSHRecord()
+        {
+            using (Db db = new Db())
+            {
+                //List<SSHRecordsVM> myBooking = new List<SSHRecordsVM>();
+
+                var records = db.SSHRecords.Select(x => new SSHRecordsVM
+                {
+                    Id = x.Id,
+                    SSHUser = x.SSHUser,
+                    SSHPassword = x.SSHPassword
+                }).ToList();
+
+                //Init List for BookingVM
+                //List<MyBookingsVM> bookings = db.Bookings.Where(x => x.CreatedBy.Equals(email)).Any();
+                return View("SSHRecord", records);
+
+            }
+        }
+
+        //-------------------------------------SSH--------------------------------
+        //GET: /Booking/CreateSSH
+        [HttpGet]
+        [ActionName("create-ssh")]
+        public ActionResult CreateSSH()
+        {
+            return View("CreateSSH");
+        }
+
+        //POST: /Booking/CreateSSH
+        [HttpPost]
+        [ActionName("create-ssh")]
+        public ActionResult CreateSSH(SSHRecordsVM model)
+        {
+            //Check if Mode State is valid
+            if (!ModelState.IsValid)
+            {
+                return View("CreateSSH", model);
+            }
+
+            //Hash the Password
+            CustomPasswordHasher hash = new CustomPasswordHasher();
+            string hashedPassword = hash.HashPassword(model.SSHPassword);
+
+            //Check if password is not empty
+            if (!string.IsNullOrEmpty(model.SSHPassword))
+            {
+                //Check if password and confirm password matches
+                if (!model.SSHPassword.Equals(model.SSHPasswordConfirm))
+                {
+                    TempData["Failure"] = "Passwords do not match";
+                    return View("CreateSSH", model);
+                }
+            }
+
+            using (Db db = new Db())
+            {
+                //Make sure username is unique
+                if (db.SSHRecords.Any(x => x.SSHUser.Equals(model.SSHUser)))
+                {
+                    TempData["Failure"] = "Email Address " + model.SSHUser + " has already been created.";
+                    model.SSHUser = "";
+                    return View("CreateSSH", model);
+                }
+
+                //Continue with the booking
+                SSHRecordDTO sshRecordDTO = new SSHRecordDTO()
+                {
+                    SSHUser = model.SSHUser,
+                    SSHPassword = hashedPassword
+                };
+
+                db.SSHRecords.Add(sshRecordDTO);
+                db.SaveChanges();
+
+                string SSH = @"c:\temp\ssh.bat";
+                string Del = @"c:\temp\delete.bat";
+
+                if (!System.IO.File.Exists(SSH))
+                {
+                    // Create a file to write to.
+                    using (StreamWriter sw = System.IO.File.CreateText(SSH))
+                    {
+                        sw.WriteLine("en");
+                        sw.WriteLine("cisco");
+                        sw.WriteLine("");
+                        sw.WriteLine("conf t");
+                        sw.WriteLine("username " + model.SSHUser + " password " + model.SSHPassword);
+                        sw.WriteLine("exit");
+                        sw.WriteLine("exit");
+                    }
+
+                }
+
+                if (!System.IO.File.Exists(Del))
+                {
+                    // Create a file to write to.
+                    using (StreamWriter sw = System.IO.File.CreateText(Del))
+                    {
+                        sw.WriteLine("@echo off");
+                        sw.WriteLine("del ssh.bat");
+                        sw.WriteLine("del delete.bat");
+
+                    }
+
+                }
+                //Provision Account here
+                string com = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PuTTY (64-bit)";
+                string com2 = @"putty.exe -ssh " + "admin" + "@" + "40.122.27.77" + " -pw " + "cisco" + " -m " + SSH;
+                string command = "/C cd " + com + " & @echo off & " + com2 + " & cd.. & cd.. & cd.. & cd.. & cd.. & cd.. & cd C:/temp/ & @echo off & delete.bat";
+                System.Diagnostics.Process.Start("cmd.exe", command);
+
+                TempData["Success"] = "You have successfully added and provisioned an SSH Account";
+
+                //string command2 = "/C cd C:/temp/ & @echo off & delete.bat";
+                //System.Diagnostics.Process.Start("cmd.exe", command2);
+
+
+                return RedirectToAction("ssh-record", "Booking");
+            }
+            
+        }
+
+        //GET: /Booking/EditSSH/id
+        [ActionName("edit-ssh")]
+        [HttpGet]
+        public ActionResult EditSSH(int id)
+        {
+            int bookingId = id;
+
+            //Declare MyBookings VM
+            SSHRecordsVM model;
+
+            using (Db db = new Db())
+            {
+
+
+                //Get user
+                SSHRecordDTO dto = db.SSHRecords.FirstOrDefault(x => x.Id.Equals(bookingId));
+
+                if (dto == null)
+                {
+                    TempData["Failure"] = "The account does not exist";
+                    return View("SSHRecord");
+                }
+
+                model = new SSHRecordsVM();
+                model.Id = dto.Id;
+                model.SSHUser = dto.SSHUser;
+                model.SSHPassword = "";
+                model.SSHPasswordConfirm = "";
+
+                return View("EditSSH", model);
+            }
+
+
+        }
+
+        //POST: /Booking/EditSSH/id
+        [ActionName("edit-ssh")]
+        [HttpPost]
+        public ActionResult EditSSH(SSHRecordsVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("EditSSH", model);
+            }
+
+            //Check if password is not empty
+            if (!string.IsNullOrEmpty(model.SSHPassword))
+            {
+                //Check if password and confirm password matches
+                if (!model.SSHPassword.Equals(model.SSHPasswordConfirm))
+                {
+                    TempData["Failure"] = "Passwords do not match";
+                    return View("EditSSH", model);
+                }
+            }
+            using (Db db = new Db())
+            {
+                if (db.SSHRecords.Any(x => x.Id.Equals(model.Id)))
+                {
+                    SSHRecordDTO dto = db.SSHRecords.Find(model.Id);
+                    dto.SSHUser = model.SSHUser;
+
+                    if (!string.IsNullOrEmpty(model.SSHPassword))
+                    {
+                        CustomPasswordHasher hash = new CustomPasswordHasher();
+                        string hashedPassword = hash.HashPassword(model.SSHPassword);
+
+                        if (model.SSHPassword.Equals(model.SSHPasswordConfirm))
+                        {
+                            dto.SSHPassword = hashedPassword;
+                        }
+                    }
+
+                    db.SaveChanges();
+                }
+                else
+                {
+                    TempData["Failure"] = "Invalid Edit SSH Request";
+                    return View("EditSSH", model);
+                }
+            }
+
+            string SSH = @"c:\temp\ssh.bat";
+            string Del = @"c:\temp\delete.bat";
+
+            if (!System.IO.File.Exists(SSH))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = System.IO.File.CreateText(SSH))
+                {
+                    sw.WriteLine("en");
+                    sw.WriteLine("cisco");
+                    sw.WriteLine("");
+                    sw.WriteLine("conf t");
+                    sw.WriteLine("username " + model.SSHUser + " password " + model.SSHPassword);
+                    sw.WriteLine("exit");
+                    sw.WriteLine("exit");
+                    sw.WriteLine("exit");
+                }
+
+            }
+
+            if (!System.IO.File.Exists(Del))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = System.IO.File.CreateText(Del))
+                {
+                    sw.WriteLine("@echo off");
+                    sw.WriteLine("del ssh.bat");
+                    sw.WriteLine("del delete.bat");
+
+                }
+
+            }
+            //Provision Account here
+            string com = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PuTTY (64-bit)";
+            string com2 = @"putty.exe -ssh " + "admin" + "@" + "40.122.27.77" + " -pw " + "cisco" + " -m " + SSH;
+            string command = "/C cd " + com + " & @echo off & " + com2 + " & cd.. & cd.. & cd.. & cd.. & cd.. & cd.. & cd C:/temp/ & @echo off & delete.bat";
+            System.Diagnostics.Process.Start("cmd.exe", command);
+
+            TempData["Success"] = "You have successfully edited your SSH Account";
+            return View("EditSSH");
+        }
+
+        //GET: /Booking/DeleteSSH/id
+        [ActionName("delete-ssh")]
+        [HttpGet]
+        public ActionResult DeleteSSH(int id)
+        {
+            int bookingId = id;
+
+            //Declare MyBookings VM
+            DeleteSSHVM model;
+            
+            using (Db db = new Db())
+            {
+
+
+                //Get user
+                SSHRecordDTO dto = db.SSHRecords.FirstOrDefault(x => x.Id.Equals(bookingId));
+
+                if (dto == null)
+                {
+                    TempData["Failure"] = "The account does not exist";
+                    return View("SSHRecord");
+                }
+
+                model = new DeleteSSHVM();
+                model.Id = dto.Id;          
+                model.SSHPassword = "";
+
+                return View("DeleteSSH", model);
+            }
+            
+        }
+
+        //POST: /Booking/DeleteSSH/id
+        [ActionName("delete-ssh")]
+        [HttpPost]
+        public ActionResult EditSSH(DeleteSSHVM model)
+        {
+            
+            string SSH = @"c:\temp\ssh.bat";
+            string Del = @"c:\temp\delete.bat";
+
+            
+            using (Db db = new Db())
+            {
+                if (db.SSHRecords.Any(x => x.Id.Equals(model.Id)))
+                {
+                    string OldUser;
+                    string OldPass;
+
+                    SSHRecordDTO dto = db.SSHRecords.Find(model.Id);
+                    OldUser = dto.SSHUser;
+
+                    if (!string.IsNullOrEmpty(model.SSHPassword))
+                    {
+                        CustomPasswordHasher hash = new CustomPasswordHasher();
+                        string hashedPassword = hash.HashPassword(model.SSHPassword);
+
+                        if (hashedPassword.Equals(dto.SSHPassword))
+                        {
+                            OldPass = model.SSHPassword;
+
+                            if (!System.IO.File.Exists(SSH))
+                            {
+                                // Create a file to write to.
+                                using (StreamWriter sw = System.IO.File.CreateText(SSH))
+                                {
+                                    sw.WriteLine("en");
+                                    sw.WriteLine("cisco");
+                                    sw.WriteLine("");
+                                    sw.WriteLine("conf t");
+                                    sw.WriteLine("no username " + OldUser + " password " + OldPass);
+                                    sw.WriteLine("enable password " + "cisco");
+                                    sw.WriteLine("exit");
+                                    sw.WriteLine("exit");
+                                    sw.WriteLine("exit");
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            TempData["Failure"] = "Password does not match your SSH account";
+                                return View("DeleteSSH", model);
+                        }
+                    }
+
+                    db.SSHRecords.Remove(dto);
+
+                    db.SaveChanges();
+                }
+            }
+
+
+            if (!System.IO.File.Exists(Del))
+            {
+                // Create a file to write to.
+                using (StreamWriter sw = System.IO.File.CreateText(Del))
+                {
+                    sw.WriteLine("@echo off");
+                    sw.WriteLine("del ssh.bat");
+                    sw.WriteLine("del delete.bat");
+
+                }
+
+            }
+            //Provision Account here
+            string com = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\PuTTY (64-bit)";
+            string com2 = @"putty.exe -ssh " + "admin" + "@" + "40.122.27.77" + " -pw " + "cisco" + " -m " + SSH;
+            string command = "/C cd " + com + " & @echo off & " + com2 + " & cd.. & cd.. & cd.. & cd.. & cd.. & cd.. & cd C:/temp/ & @echo off & delete.bat";
+            System.Diagnostics.Process.Start("cmd.exe", command);
+
+            TempData["Success"] = "You have successfully deleted the SSH Account";
+            return RedirectToAction("ssh-record");
+        }
+
         //-------------------------------------Static Success/Failure Page--------------------------------
 
         //GET: /Booking/BookingSuccess

@@ -1,0 +1,43 @@
+﻿@model DexterLab.Models.ViewModels.DeleteSSHVM
+
+@{
+    ViewBag.Title = "DeleteSSH";
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Failure"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Failure"]
+    </div>
+}
+
+<h2>Delete SSH Account</h2>
+<hr />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Enter your password to confirm your SSH Account deletion:</h4>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SSHPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.PasswordFor(model => model.SSHPassword, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.SSHPassword, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Delete" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
