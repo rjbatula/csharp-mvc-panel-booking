@@ -16,26 +16,26 @@
     </div>
 }
 
-<h2>Delete SSH Account</h2>
+<h2 class="text-center block text-gray-700 font-bold mb-2" >Delete SSH Account</h2>
 <hr />
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-<div class="form-horizontal">
-    <h4>Enter your password to confirm your SSH Account deletion:</h4>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.SSHPassword, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.PasswordFor(model => model.SSHPassword, new { @class = "form-control" })
+<div class="form-horizontal bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-full mx-auto w-full max-w-full sm:max-w-screen-xs  md:max-w-screen-xs lg:max-w-screen-md lg:mt-5 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-full">
+    <h4 class="text-center block text-gray-700 font-bold mb-2">Confirm your SSH Account deletion:</h4>
+    <br />
+    <div class="form-group mx-auto">
+        <label class="control-label block text-gray-700 text-lg font-bold mb-2">SSH Password </label>
+        <div class="mb-6 mx-auto">
+            @Html.PasswordFor(model => model.SSHPassword, new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" })
             @Html.ValidationMessageFor(model => model.SSHPassword, "", new { @class = "text-danger" })
         </div>
     </div>
-
+    <br />
     <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Delete" class="btn btn-default" />
+        <div class="mx-auto">
+            <input type="submit" value="Delete SSH" class="btn btn-danger w-full max-w-full" />
         </div>
     </div>
 </div>
