@@ -33,7 +33,7 @@
             @Html.DropDownListFor(model => model.DeviceName, new List<SelectListItem>
             {
                new SelectListItem { Text = "Palo Alto", Value = "Palo Alto", Selected=true},
-               new SelectListItem { Text = "ChecPoint", Value = "ChecPoint"}
+               new SelectListItem { Text = "Cisco ASAv", Value = "Cisco ASAv"}
             }, new { @class = "w-full max-w-full shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight  focus:bg-white focus:shadow-outline focus:border-blue-300" })
             @Html.ValidationMessageFor(model => model.DeviceName, "", new { @class = "text-danger" })
         </div>
